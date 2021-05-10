@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(eeptools) # to import the decomma() function
 library(boot)
 library(caret)
+library(psych)
 ```
 
 ## Question
@@ -148,6 +149,31 @@ confusionMatrix(recession_predictions, reference = as.factor(price_changes$reces
 
 
 
+It looks like there's not much of a correlation between recessions and positive
+vs negative price changes of goods. Let's investigate using a contingency table.
+
+```{r}
+# unpack the dataframe price_changes into two columns
+change_vs_recession <- data.frame(change=numeric(2400),recession_bool=rep(price_changes$recession_bool,10))
+
+for (c in 2:11) {
+  for (r in 2:241) {
+    change_vs_recession[r-1+240*(c-2),1] <- price_changes[r-1,c]
+  }
+}
+
+hist(change_vs_recession$change)
+table(change_vs_recession$change >= 0, change_vs_recession$recession_bool)
+
+# During recessions: price diff >= 0 212 times; price diff < 0 168 times
+# During other times: price diff >= 0 1130 times; price diff < 0 890 times
+
+212/(212+168) # Price goes up 55.8% of the time during recessions
+1130/(1130+890) # Price goes up 55.9% of the time without recession
+
+# price_changes_in_recession <- c()
+# price_changes_no_recession <- c()
+```
 
 
 
@@ -156,6 +182,11 @@ confusionMatrix(recession_predictions, reference = as.factor(price_changes$reces
 
 
 
+Make a graphical display to see if any commodities are correlated to each other.
+
+```{r}
+pairs.panels(price_changes[,2:13])
+```
 
 
 
