@@ -17,8 +17,8 @@
 #*Set-up and cleaning up the data
 #********************************
 
-library(ggplot2)
-library(zoo)
+#library(ggplot2)
+#library(zoo)
 setwd("~/Dropbox (Personal)/Work 2021/- Math 23c/term project")
 chiSqTest <- dget("chiSqTest.R")
 
@@ -157,6 +157,7 @@ rec_type$USRECD["2020-03-01" <= rec_type$DATE && rec_type$DATE<= "2021-02-28"]<-
 # Append the recession type indicator 
 
 #drop the weekend dates to get the same vector length
+rec_type_df <- rec_type
 rec_types_use <- rec_type_df[which((rec_type_df$DATE %in% dailydata2$Date)==TRUE),]
 
 #Data frame with all goods, recession indicators, and recession type indicators
