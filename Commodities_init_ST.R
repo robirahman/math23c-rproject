@@ -8,6 +8,9 @@
 # 04/17
 # all goods
 
+# 05/11 
+# daily data dataframe
+
 
 
 #********************************
@@ -28,12 +31,138 @@ setwd("/Users/stai/math23c-rproject")
 projdata <- read.csv("/Users/stai/math23c-rproject/source_data/commodities data.csv", stringsAsFactors=FALSE); head(projdata)
 HSY_data <- read.csv("/Users/stai/math23c-rproject/source_data/HSY.csv", stringsAsFactors=FALSE); head(HSY_data)
 rec_indic <-read.csv("/Users/stai/math23c-rproject/source_data/monthly recession indicator.csv", stringsAsFactors=FALSE); head(rec_indic)
+daily_rec_indic <-read.csv("/Users/stai/math23c-rproject/source_data/daily_USRECInd.csv", stringsAsFactors=FALSE); head(daily_rec_indic)
 
-# Create a dataframe
+dailyWTI <- read.csv("/Users/stai/math23c-rproject/source_data/dailyWTI.csv", stringsAsFactors=FALSE); head(dailyWTI)
+dailySUG <- read.csv("/Users/stai/math23c-rproject/source_data/CANE_daily.csv", stringsAsFactors=FALSE); head(dailySUG)
+dailySOYB <- read.csv("/Users/stai/math23c-rproject/source_data/SOYB_daily.csv", stringsAsFactors=FALSE); head(dailySOYB)
+dailyWEAT <- read.csv("/Users/stai/math23c-rproject/source_data/WEAT_daily.csv", stringsAsFactors=FALSE); head(dailyWEAT)
+dailyGOLD <- read.csv("/Users/stai/math23c-rproject/source_data/GOLD_daily.csv", stringsAsFactors=FALSE); head(dailyGOLD)
+dailyCOCOA <- read.csv("/Users/stai/math23c-rproject/source_data/COCOA_daily.csv", stringsAsFactors=FALSE); head(dailyCOCOA)
+
+
+#********************************
+#* Clean up data and create dataframes
+#********************************
+
+
+#---------------------
+# Monthly data dataframe
+#---------------------
+
+# Create a dataframe for monthly data
 df_comm <- data.frame(projdata); head(df_comm)
 df_comm$Gold..USD...ozt. <- as.numeric(gsub(",", "", df_comm$Gold..USD...ozt.)) ;
 
-# Append the recession indicator 
+
+#---------------------
+# Daily data dataframe
+#---------------------
+
+# Create a dataframe for the daily data; standardize all the date columns 
+
+# Standardizing all the date columns into their own individual data column 
+# so that we can then merge onto one dataframe
+dailyCOCOA$stdDATE = dailyCOCOA$Date
+dailyWEAT$stdDATE = dailyWEAT$Date
+dailySOYB$stdDATE = dailySOYB$Date
+dailySUG$stdDATE = dailySUG$Date
+dailyWTI$stdDATE = dailyWTI$Date
+dailyGOLD$stdDATE = dailyGOLD$Date
+HSY_data$stdDATE = HSY_data$Date
+
+#problem is different number of rows for different goods; the vectors aren't the same length
+#Change names of prices
+dailyCOCOA$priceCOCOA = dailyCOCOA$Adj.Close
+dailyWEAT$priceWEAT = dailyWEAT$Adj.Close
+dailySOYB$priceSOYB = dailySOYB$Adj.Close
+dailySUG$priceSUG = dailySUG$Adj.Close
+dailyWTI$priceOIL = dailyWTI$DCOILWTICO
+dailyGOLD$priceGOLD = dailyGOLD$GOLDAMGBD228NLBM
+HSY_data$priceHYS = HSY_data$Adj.Close
+
+#columns we want
+dailydata <- data.frame(cbind(dailyGOLD$DATE, dailyGOLD$priceGOLD, 
+                              dailyWTI$priceOIL, dailyCOCOA$priceCOCOA, 
+                              dailySUG$priceSUG, HSY_data$priceHYS, 
+                              dailyWEAT$priceWEAT, dailySOYB$priceSOYB))
+
+#Rename the columns
+names(dailydata)[names(dailydata) == "X1"] <- "Date"
+names(dailydata)[names(dailydata) == "X2"] <- "priceGOLD"
+names(dailydata)[names(dailydata) == "X3"] <- "priceWTI"
+names(dailydata)[names(dailydata) == "X4"] <- "priceCOCOA"
+names(dailydata)[names(dailydata) == "X5"] <- "priceSUG"
+names(dailydata)[names(dailydata) == "X6"] <- "priceHYS"
+names(dailydata)[names(dailydata) == "X7"] <- "priceWEAT"
+names(dailydata)[names(dailydata) == "X8"] <- "priceSOYB"
+
+head(dailydata)
+
+#         Date priceGOLD priceWTI priceCOCOA  priceSUG  priceHYS priceWEAT priceSOYB
+# 1 2001-01-02   272.800    27.29  49.439999 25.110001 20.417894     24.57 24.549999
+# 2 2001-01-03   269.000    27.93  50.150002     25.57 19.242188 24.870001     25.08
+# 3 2001-01-04   268.750    27.95      50.52     24.73 17.870544     24.23     24.34
+# 4 2001-01-05   268.000    28.02  50.459999     23.76 18.105692        23        24
+# 5 2001-01-08   268.600    27.44  52.200001     23.33 18.556374 23.559999        23
+# 6 2001-01-09   267.750    27.72  51.959999     23.42 18.575972     23.59 23.459999
+
+#Add the recession indicators (0 or 1)
+# The Feds' daily indicators include weekend days, which is a problem because the dataframe does not.
+# This means there is a problem with appending the indicators directly onto the dataframe
+daily_rec_indicdf <- data.frame(daily_rec_indic)
+
+#Find the data that's the same
+daily_rec_indicdf$DATE %in% dailydata$Date
+# summary(daily_rec_indicdf$DATE %in% dailydata$Date)
+#     Mode   FALSE    TRUE 
+# logical    2105    5259 
+
+rec_inds_use <- daily_rec_indicdf[which((daily_rec_indicdf$DATE %in% dailydata$Date)==TRUE),]
+summary(rec_inds_use)
+# Length:5259  
+
+# The data vectors match; the dates are aligned. Now bind this.
+dailydata2 <- data.frame(cbind(dailydata, rec_inds_use$USRECD))
+
+
+#Add the specific recession indicators (0-3)
+rec_type <- daily_rec_indicdf
+
+#Change the indicator from 1 to 2 or 3 for the housing crisis and covid recessions.
+rec_type$USRECD["2008-01-01" <= rec_type$DATE & rec_type$DATE<= "2009-06-30" & rec_type$USRECD == "1"] <- "2"
+# 547 values
+rec_type$USRECD["2020-03-01" <= rec_type$DATE && rec_type$DATE<= "2021-02-28"]<-3
+# 365 values
+
+#dotcom crash
+# 244 values
+
+
+#Dates for the recessions
+#Dotcom crash: keep as indicator 1
+# 91   2001-04-01      1
+# 334  2001-11-30      1
+
+
+#Housing crisis: turn to indicator 2
+# 2557 2008-01-01      1
+# 3103 2009-06-30      1
+
+#COVID-19 pandemic turn to indicator 3
+# 7000 2020-03-01      1
+# 7364 2021-02-28      1
+
+#Add the daily stock market data to the dataframe
+# Append the recession type indicator 
+
+#drop the weekend dates to get the same vector length
+rec_types_use <- rec_type_df[which((rec_type_df$DATE %in% dailydata2$Date)==TRUE),]
+
+#Data frame with all goods, recession indicators, and recession type indicators
+dailydata_ALL <- data.frame(cbind(dailydata2, rec_types_use$USRECD))
+
+
 # NOTE NEED TO FIX: this because originally indicator had March 2021 as well
 df_comm$rec_indic <- rec_indic$USREC[1:241]
 
@@ -175,11 +304,13 @@ qqline(gold_diff_diff2)
 #which(df_comm$rec_indic == 1)
 
 # Do we need daily data on this...
+hist(df_comm$Gold..USD...ozt.[which(df_comm$rec_indic == 0)])
+hist(df_comm$Gold..USD...ozt.[which(df_comm$rec_indic == 1)])
+
 hist(df_comm$Gold..USD...ozt.[which(df_comm$rec_indic == 0)], breaks=50)
 hist(df_comm$Gold..USD...ozt.[which(df_comm$rec_indic == 1)], breaks=50)
 
-hist(df_comm$Gold..USD...ozt.[which(df_comm$rec_indic == 0)])
-hist(df_comm$Gold..USD...ozt.[which(df_comm$rec_indic == 1)])
+
 
 #*****************
 #*Oil
@@ -251,6 +382,9 @@ pval_beef_diff_diff2 <- chiSqTest(beef_diff_diff2)
 # [1] "3.70335576819339e-77"
 
 # QQ plots to see how distribution compares to normal distribution
+
+# QQ plots to see how distribution compares to normal distribution
+# REFER TO https://stats.stackexchange.com/questions/101274/how-to-interpret-a-qq-plot for a review
 
 # Log Price Changes/percentage changes
 qqnorm(beef_price_change1)
