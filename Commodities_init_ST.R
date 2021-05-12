@@ -163,6 +163,7 @@ rec_types_use <- rec_type_df[which((rec_type_df$DATE %in% dailydata2$Date)==TRUE
 #Data frame with all goods, recession indicators, and recession type indicators
 dailydata_ALL <- data.frame(cbind(dailydata2, rec_types_use$USRECD))
 
+#latest version on Git: "dailydata updated"
 
 # NOTE NEED TO FIX: this because originally indicator had March 2021 as well
 df_comm$rec_indic <- rec_indic$USREC[1:241]
