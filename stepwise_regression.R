@@ -39,4 +39,8 @@ summary(recession_reg)
 # But we shouldn't be using linear models: logistic is more accurate since
 # recession is a boolean, so the y-values are 0 or 1.
 
-# repeat using glm()
+recession_reg <- glm(recession_bool ~ ., data=price_changes[,2:13])
+
+stepAIC(recession_reg)
+
+# The model for recession predictions does best with nothing but unemployment rate.

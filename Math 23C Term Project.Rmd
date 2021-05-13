@@ -11,6 +11,7 @@ library(eeptools) # to import the decomma() function
 library(boot)
 library(caret)
 library(psych)
+library(ggplot2)
 ```
 
 ## Question
@@ -171,10 +172,58 @@ table(change_vs_recession$change >= 0, change_vs_recession$recession_bool)
 212/(212+168) # Price goes up 55.8% of the time during recessions
 1130/(1130+890) # Price goes up 55.9% of the time without recession
 
-# price_changes_in_recession <- c()
-# price_changes_no_recession <- c()
 ```
 
+```{r}
+# Repeat the above analysis, but break up the recession category into three.
+change_vs_recession <- data.frame(change=numeric(2400),which_recession=rep(price_changes$which_recession,10))
+
+for (c in 2:11) {
+  for (r in 2:241) {
+    change_vs_recession[r-1+240*(c-2),1] <- price_changes[r-1,c]
+  }
+}
+
+hist(change_vs_recession$change)
+table(change_vs_recession$change >= 0, change_vs_recession$which_recession)
+
+1130/(890+1130) # Prices increased 55.9% of the time outside of recessions
+38/(38+42) # # Prices increased 47.5% of the time during the dotcom recession
+101/(101+79) # Prices increased 56.1% of the time during the housing crisis
+73/(73+47) # Prices increased 60.8% of the time during the COVID pandemic
+
+
+
+df <- tibble::tribble(
+  ~x, ~y, ~price,
+  "non-recession", 1130,  "same/increased",
+  "non-recession", -890,  "decreased",
+  
+  "recession", 212,  "same/increased",
+  "recession", -168,  "decreased",
+  
+)
+ggplot(data = df, aes(x, y, group = price)) +
+  geom_col(aes(fill = price), position = position_stack(reverse = TRUE)) +
+  geom_hline(yintercept = 0)
+
+df <- tibble::tribble(
+  ~x, ~y, ~price,
+  
+  "dotcom crash", 38,"same/increased",
+  "dotcom crash", -42,  "decreased",
+  
+  "financial crisis", 101,"same/increased",
+  "financial crisis", -79,  "decreased",
+  
+  
+  "COVID pandemic", 73,"same/increased",
+  "COVID pandemic", -47,  "decreased",
+)
+ggplot(data = df, aes(x, y, group = price)) +
+  geom_col(aes(fill = price), position = position_stack(reverse = TRUE)) +
+  geom_hline(yintercept = 0)
+```
 
 
 
