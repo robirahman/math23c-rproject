@@ -214,12 +214,22 @@ pairs.panels(price_changes[,2:13])
 
 
 
-## Analysis - Sharon
+## Distribution Analysis - Sharon
 
 ```{r}
 
 ```
+## Comparison Across Goods
 
+# Prices
+During the two decades...the first half and second half...
+The effects during a recession...achieved more granularity by using daily data.
+
+# Price Changes
+Using daily data
+
+# Difference in Price Changes
+Using daily data
 
 
 
