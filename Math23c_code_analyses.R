@@ -1,5 +1,5 @@
 # Math 23C: Final project
-# Daily data analyses: Goods prices and the 
+# Daily data analyses: Goods prices and the different recessions
 # Monthly data analyses
 set.seed(24)
 
@@ -205,7 +205,8 @@ plot(df_comm$Date, df_comm$rec2020)
 #Code for tests
 #-----------------
 
-#chiSqTest code. Should be in accompanying file. Comment out once you've used.
+#chiSqTest code we wrote for this. 
+# Should be in accompanying file. Comment out once you've used.
 #chiSqTest <- dget("chiSqTest.R")
 
 
@@ -241,37 +242,88 @@ hist(diff(log(df_comm$Gold..USD...ozt.)))
 # Dataset is organized chronologically
 # First half of the two decades
 hist(df_comm$Gold..USD...ozt.[1:120])
+summary(df_comm$Gold..USD...ozt.[1:120])
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 260.5   359.6   552.4   626.0   888.9  1390.5
 var(df_comm$Gold..USD...ozt.[1:120])
-# Greater variance than the second half
+# Greater variance than the second half of the time period: see below.
 # 98757.43
+sd(df_comm$Gold..USD...ozt.[1:120])
+# 314.2569
+
 
 # Second half 
 hist(df_comm$Gold..USD...ozt.[121:240])
+summary(df_comm$Gold..USD...ozt.[121:240])
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#1076    1244    1318    1406    1592    1969 
 var(df_comm$Gold..USD...ozt.[121:240])
 # Variance: 47899.8
+sd(df_comm$Gold..USD...ozt.[121:240])
+# 218.8602
+
+#Conclusions about the two halves of the two decades:
+# The greater variance and standard deviation of the first half
+# of the decade indicates greater volatility in gold prices. 
+# To consider: why is gold seemingly more stable in the second half of the time period,
+# when the mean price of gold was also higher? Why was there less volatility? 
+# See below for consideration of the price changes themselves.
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Monthly: Differences in price changes
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 gold_price_change_Feb01Jan2011 <- diff(log(df_comm$Gold..USD...ozt.[1:120]))
 hist(gold_price_change_Feb01Jan2011)
+summary(gold_price_change_Feb01Jan2011)
+#     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+# -0.12480 -0.01037  0.01447  0.01385  0.04141  0.10217 
+var(gold_price_change_Feb01Jan2011)
+#0.001555529
+sd(gold_price_change_Feb01Jan2011)
+#0.03944019
 
 gold_price_change_Feb11Jan21 <- diff(log(df_comm$Gold..USD...ozt.[121:240]))
 hist(gold_price_change_Feb11Jan21)
+summary(gold_price_change_Feb11Jan21)
+#    Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -0.0683367 -0.0183982 -0.0004282  0.0025723  0.0239885  0.1119255 
+var(gold_price_change_Feb11Jan21)
+# 0.001152209
+sd(gold_price_change_Feb11Jan21)
+#0.0339442
 
-# differences in price changes
+
+# difference in price changes
 gold_diff_diffFeb01Jan2011 <- diff(diff(log(df_comm$Gold..USD...ozt.[1:120])))
 hist(gold_diff_diffFeb01Jan2011)
 # Tight normal distribution?
+summary(gold_diff_diffFeb01Jan2011)
+#     Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -0.2255643 -0.0347651  0.0030388 -0.0002228  0.0316488  0.1858971 
 var(gold_diff_diffFeb01Jan2011)
 #0.003063077
+sd(gold_diff_diffFeb01Jan2011)
+#0.05534507
 
 gold_diff_diffFeb11Jan21 <- diff(diff(log(df_comm$Gold..USD...ozt.[121:240])))
 hist(gold_diff_diffFeb11Jan21)
+summary(gold_diff_diffFeb11Jan21)
+#     Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -0.1044888 -0.0275081 -0.0001921 -0.0002554  0.0248185  0.1041309 
 var(gold_diff_diffFeb11Jan21)
 #0.001758639
+sd(gold_diff_diffFeb11Jan21)
+#0.04193613
+
+# The intraperiod prices changes during the two periods is very similar.
+# The differences in price changes, however, is less similar. There is
+# greater variance in the first decade's difference in price changes.
+# This again confirms the need to question why the first decade was
+# more volatile for gold prices. See the RMD file for comparison across goods.
 
 #***Chi-square tests on normal distribution
+#*
+#*Use the code in the accompanying file chiSqTest.R
 
 # Differences in the price changes
 pval_gold_diff_diffFeb01Jan2011 <- chiSqTest(gold_diff_diffFeb01Jan2011)
@@ -279,18 +331,23 @@ pval_gold_diff_diffFeb01Jan2011 <- chiSqTest(gold_diff_diffFeb01Jan2011)
 "377.769491525424"
 "p-value with df = {nbins - 2}:"
 "1.06109053748395e-76"
+# The Chi-sq test confirms this is a normal distribution,
+# with a tiny p-value. This normal distribution has a very
+# very small chance of having occurred by chance.
 
 pval_gold_diff_diffFeb11Jan21 <- chiSqTest(gold_diff_diffFeb11Jan21)
 "Chi-sq test statistic:"
 "377.769491525424"
 "p-value with df = {nbins - 2}:"
 "1.06109053748395e-76"
+# The Chi-sq test confirms this is a normal distribution,
+# with a tiny p-value. This normal distribution has a very
+# very small chance of having occurred by chance.
 
 
 #QQ plots test of normality
 
 # QQ plots to see how distribution compares to normal distribution
-# REFER TO https://stats.stackexchange.com/questions/101274/how-to-interpret-a-qq-plot for a review
 
 # Log Price Changes/percentage changes
 qqnorm(gold_price_change_Feb01Jan2011)
@@ -303,16 +360,20 @@ qqline(gold_diff_diffFeb11Jan21)
 qqnorm(gold_diff_diffFeb01Jan2011)
 qqline(gold_diff_diffFeb01Jan2011) 
 # Looks normal, but need to look more closely at the tails.
+# There is divergence from the x=y line at the tails, 
+# implying that the dataset is heavy-tailed.It's heavier-tailed
+# than the monthly data from the second half of the time period.
 
 qqnorm(gold_diff_diffFeb11Jan21)
 qqline(gold_diff_diffFeb11Jan21) 
-## Looks normal, but need to look more closely at the tails.
+# See above.
 
-#Localized QQ plot analysis
 
 
 # Comparing to relationship with recessions. 
-# However, looking at this at the monthly level is likely not granular enough.
+# However, looking at this at the monthly level is likely not granular enough
+# for us to conclude anything meaningful beyond the clustering around
+# certain prices. This is in line with the heavy-tailed QQ plots.
 hist(df_comm$Gold..USD...ozt.[which(df_comm$rec_indic == 0)])
 hist(df_comm$Gold..USD...ozt.[which(df_comm$rec_indic == 1)])
 
@@ -376,21 +437,29 @@ daily_pval_gold_diff_diff<- chiSqTest(daily_gold_diff_diff)
 #QQ plots test of normality
 
 # QQ plots to see how distribution compares to normal distribution
-# REFER TO https://stats.stackexchange.com/questions/101274/how-to-interpret-a-qq-plot for a review
 
 # Log Price Changes/percentage changes
 qqnorm(daily_gold_price_change)
 qqline(daily_gold_price_change) 
-#WHOA, that's not normal
+#WHOA, that's not normal. This is 
+# a heavy-tailed QQ plot. We saw this slightly in the monthly data, where the 
+# tails also did not follow a normal distribution, veering away from the 
+# y = x line. With the daily data, it is even clearer the tails are heavy.
+# See below for analysis that removes data points with a z-score > |2.5|
 
 
 # Changes in log price changes/percentage changes
 qqnorm(daily_gold_diff_diff)
 qqline(daily_gold_diff_diff) 
-#WHOA, that's not normal either. Longer dark spot than price changes.
+#WHOA, that's not normal either. While the 
+# middle of the Longer dark spot than price changes.
+# We saw this slightly in the monthly data, where the 
+# tails also did not follow a normal distribution, veering away from the 
+# y = x line. 
 
 
 #Localized QQ plot analysis
+# Use the subset function
 
 
 # Comparing to relationship with recessions. 
@@ -440,7 +509,8 @@ curve(paretopdf, col="darkblue", lwd=3.2, add=TRUE)
 # randomly drawn according to the distribution function's inverse.
 
 # b) 
-# library(fitdistrplus)
+library(fitdistrplus)
+# Leave the library commands; comment out the installs.
 
 
 # Use a qq plot to see if the claims follow Pareto distribution with different parameters
@@ -473,5 +543,7 @@ curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
 # This looks pretty good! The curve fits the historgram. 
 
 
-
+#-------------------------------------
+# Daily: Gold: Levy distribution 
+#-------------------------------------
 
