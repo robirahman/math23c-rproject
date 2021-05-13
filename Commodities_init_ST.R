@@ -132,7 +132,8 @@ rec_type <- daily_rec_indicdf
 #Change the indicator from 1 to 2 or 3 for the housing crisis and covid recessions.
 rec_type$USRECD["2008-01-01" <= rec_type$DATE & rec_type$DATE<= "2009-06-30" & rec_type$USRECD == "1"] <- "2"
 # 547 values
-rec_type$USRECD["2020-03-01" <= rec_type$DATE && rec_type$DATE<= "2021-02-28"]<-3
+#rec_type$USRECD["2020-03-01" <= rec_type$DATE && rec_type$DATE<= "2021-02-28"]<-3
+rec_type$USRECD["2020-03-01" <= rec_type$DATE & rec_type$DATE<= "2021-02-28" & rec_type$USRECD == "1"] <- "3"
 # 365 values
 
 #dotcom crash
@@ -216,24 +217,27 @@ plot(df_comm$Date, df_comm$rec2020)
 #plot(df_comm$Date[2:length(df_comm$Date)], diff(log(df_comm$Gold..USD...ozt.)))
 
 # logs, As line graphs
-# plot(df_comm$Date[2:length(df_comm$Date)], diff(log(df_comm$Gold..USD...ozt.)), 'l')
-# plot(df_comm$Date[2:length(df_comm$Date)], diff(log(df_comm$Gold..USD...ozt.)), type = 'l')
-# plot(df_comm$Date, df_comm$Gold..USD...ozt., type = 'l')
-# plot(df_comm$Date, df_comm$Beef..USD...kg., type = 'l')
-# plot(df_comm$Date, df_comm$Crude.oil..USD...bbl., type = 'l')
-# plot(df_comm$Date, df_comm$Gold..USD...ozt., type = 'l')
-# hist(df_comm$Gold..USD...ozt.)
-# hist(log(df_comm$Gold..USD...ozt.))
-# hist(diff(log(df_comm$Gold..USD...ozt.)))
-# hist(df_comm$Gold..USD...ozt.[1:120])
-# hist(df_comm$Gold..USD...ozt.[121:240])
-# hist(df_comm$Gold..USD...ozt.[1:120])
-# hist(df_comm$Gold..USD...ozt.[121:240])
+plot(df_comm$Date[2:length(df_comm$Date)], diff(log(df_comm$Gold..USD...ozt.)), 'l')
+plot(df_comm$Date[2:length(df_comm$Date)], diff(log(df_comm$Gold..USD...ozt.)), type = 'l')
+plot(df_comm$Date, df_comm$Gold..USD...ozt., type = 'l')
+plot(df_comm$Date, df_comm$Beef..USD...kg., type = 'l')
+plot(df_comm$Date, df_comm$Crude.oil..USD...bbl., type = 'l')
+plot(df_comm$Date, df_comm$Gold..USD...ozt., type = 'l')
+hist(df_comm$Gold..USD...ozt.)
+hist(log(df_comm$Gold..USD...ozt.))
+hist(diff(log(df_comm$Gold..USD...ozt.)))
+hist(df_comm$Gold..USD...ozt.[1:120])
+hist(df_comm$Gold..USD...ozt.[121:240])
+
 
 #*****************
-#*Gold ____****______
+#*Gold 
 #*****************
-#*
+
+
+#------------
+# Monthly
+#------------
 
 
 length(df_comm$Gold..USD...ozt.)
@@ -280,6 +284,10 @@ pval_gold_diff_diff2 <- chiSqTest(gold_diff_diff2)
 # [1] "377.769491525424"
 # [1] "p-value with df = {nbins - 2}:"
 # [1] "1.06109053748395e-76"
+
+#Chi-square test is large, with small probability this happened by chance.
+# So it has a normal distribution
+#Chi-sq test; p-value is probability this happened by chance.
 
 # QQ plots to see how distribution compares to normal distribution
 # REFER TO https://stats.stackexchange.com/questions/101274/how-to-interpret-a-qq-plot for a review
