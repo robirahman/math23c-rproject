@@ -1,4 +1,5 @@
 # Math 23C: Final project
+# Distribution analyses
 # Daily data analyses: Goods prices and the different recessions
 # Monthly data analyses
 set.seed(24)
@@ -10,7 +11,7 @@ set.seed(24)
 #library(ggplot2)
 #library(zoo)
 # setwd("~/Dropbox (Personal)/Work 2021/- Math 23c/term project")
-#setwd("/Users/stai/math23c-rproject")
+# setwd("/Users/stai/math23c-rproject")
 
 
 # Get the data. Make sure to set the file paths to your local file path
@@ -226,10 +227,12 @@ length(df_comm$Gold..USD...ozt.)
 # Histogram of prices
 hist(df_comm$Gold..USD...ozt., breaks=50)
 # Bimodal, no apparent skewness
+# We continue the gold analysis by breaking the monthly data into two time
+# periods because the bimodality appears to align with the two decades.
 
 #Line graphs
 plot(df_comm$Date, df_comm$Gold..USD...ozt., type = 'l')
-# Random walk
+# Looks like a random walk
 
 # Log comparisons of gold prices to rescale
 hist(log(df_comm$Gold..USD...ozt.))
@@ -392,37 +395,225 @@ hist(df_comm$Gold..USD...ozt.[which(df_comm$rec_indic == 1)], breaks=50)
 # Daily: Basic rundown
 #----------------------
 
-# Histogram of prices
 # Note: the values are strings, not numbers. So need to not include the 
 # missing values.
 daily_price_GOLD <- as.numeric(dailydata_ALL$priceGOLD[which(dailydata_ALL$priceGOLD != ".")])
 
-hist(as.numeric(dailydata_ALL$priceGOLD[which(dailydata_ALL$priceGOLD != ".")]), breaks=50)
+# Recession variables for gold
+gold_no_rec <- daily_price_GOLD[which(dailydata_ALL$rec_inds_use.USRECD == 0)]
+gold_any_rec <- daily_price_GOLD[which(dailydata_ALL$rec_inds_use.USRECD == 1)]
+
+#Types of recessions variables for gold
+gold_no_rec_type <- daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 0)]
+gold_dotcom <- daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 1)]
+gold_GreatRec <- daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 2)]
+gold_COVID <- daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 3)]
+
+#------------------------------------
+
+# Histogram of prices
+hist(daily_price_GOLD, breaks=50)
+summary(daily_price_GOLD)
+#  Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#256.7   544.8  1173.2  1015.8  1327.8  2061.5
+var(daily_price_GOLD)
+#228427.9
+sd(daily_price_GOLD)
+#477.9413
+
+# Comparing prices during recessions
+summary(gold_no_rec)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 256.7   547.7  1209.2  1038.0  1336.8  2061.5 
+hist(gold_no_rec)
+# bimodal, likely due to the price of gold being so much higher in the second decade
+var(gold_no_rec)
+# 223408.9
+sd(gold_no_rec)
+# 472.6615
+
+summary(gold_any_rec)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+# 257.0   290.6   890.1   867.1   949.5  1957.5     166 
+hist(gold_any_rec)
+# clustered around the prices during these time periods
+var(gold_any_rec)
+# NA
+sd(gold_any_rec)
+# NA
+
+
+summary(gold_dotcom)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 257.0   267.4   273.1   273.5   277.7   292.9 
+hist(gold_dotcom)
+# normal with heavy tails; possible positive skewness
+var(gold_dotcom)
+# 69.66963
+sd(gold_dotcom)
+# 8.346833
+
+summary(gold_GreatRec)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 692.5   864.0   910.0   894.5   938.8  1020.5
+hist(gold_GreatRec)
+# negative skewness
+var(gold_GreatRec)
+# 4508.915
+sd(gold_GreatRec)
+# 67.14845
+
+summary(gold_COVID)
+   #  Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+   # 1765    1834    1858    1858    1884    1957     166 
+hist(gold_COVID)
+# normal with heavy tails
+var(gold_COVID)
+# NA
+sd(gold_COVID)
+# NA
 
 #Line graphs
-plot(as.numeric(dailydata_ALL$priceGOLD[which(dailydata_ALL$priceGOLD != ".")]), type = 'l')
+plot(daily_price_GOLD, type = 'l')
+plot(gold_no_rec, type = 'l')
 
+plot(gold_any_rec, type= 'l')
+plot(gold_dotcom, type = 'l')
+# Two great peaks, overall very slowly increasing trend
+
+plot(gold_GreatRec, type='l')
+# One giant dip, followed by increasing trend
+
+plot(gold_COVID, type='l')
+# Overall decreasing trend
 
 # Log comparisons of gold prices to rescale
-hist(log(as.numeric(dailydata_ALL$priceGOLD[which(dailydata_ALL$priceGOLD != ".")])))
+hist(log(daily_price_GOLD))
 
+hist(log(gold_no_rec))
+# negative skewness
+
+hist(log(gold_any_rec))
+#three clusters around certain prices, aligned with the log price of gold during
+# each recession
+
+hist(log(gold_dotcom))
+#heavy-tailed normal
+
+hist(log(gold_GreatRec))
+#negative skewness
+
+hist(log(gold_COVID))
+#positive skewness
 
 #Difference in log values over time
-hist(diff(log(as.numeric(dailydata_ALL$priceGOLD[which(dailydata_ALL$priceGOLD != ".")]))))
+hist(diff(log(daily_price_GOLD)))
 
 
 #-------------
 # Daily: price changes
+# Note: using log values to rescale
 #------------
 
 daily_gold_price_change <- diff(log(daily_price_GOLD))
-hist(daily_gold_price_change)
+daily_gold_price_change_no_rec <- diff(log(gold_no_rec))
+daily_gold_price_change_rec <- diff(log(gold_any_rec))
+daily_gd_price_chng_dotcom <- diff(log(gold_dotcom))
+daily_gd_price_chng_GR <- diff(log(gold_GreatRec))
+daily_gd_price_chng_C19 <- diff(log(gold_COVID))
 
-# differences in price changes
+#-------------------------------------
+
+hist(daily_gold_price_change)
+summary(daily_gold_price_change)
+#      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+#-0.0891278 -0.0052370  0.0004333  0.0003667  0.0061726  0.0955416 
+var(daily_gold_price_change)
+# 0.0001224745
+sd(daily_gold_price_change)
+# 0.01106682
+
+# difference in price changes
 daily_gold_diff_diff <- diff(diff(log(daily_price_GOLD)))
 hist(daily_gold_diff_diff)
+summary(daily_gold_diff_diff)
+#   Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+#-1.270e-01 -8.403e-03 -1.802e-04 -2.300e-07  8.609e-03  1.151e-01
 var(daily_gold_diff_diff)
 # 0.0002503008
+sd(daily_gold_diff_diff)
+# 0.0158209
+
+#****************
+
+hist(daily_gold_price_change_rec)
+summary(daily_gold_price_change_rec)
+#  Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
+# -0.06579 -0.00608 -0.00026  0.00292  0.00715  1.20142      166 
+
+# difference in price changes
+daily_gold_diff_diff_rec <- diff(daily_gold_price_change_rec)
+hist(daily_gold_diff_diff_rec)
+summary(daily_gold_diff_diff_rec)
+# Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
+# -1.18282 -0.01028 -0.00038 -0.00002  0.01086  1.19905      166 
+var(daily_gold_diff_diff_rec)
+sd(daily_gold_diff_diff_rec)
+
+#****************
+
+hist(daily_gd_price_chng_dotcom)
+summary(daily_gd_price_chng_dotcom)
+# Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -0.0279777 -0.0040967  0.0001821  0.0003715  0.0038493  0.0580054 
+
+# difference in price changes
+daily_gold_diff_diff_dotcom <- diff(daily_gd_price_chng_dotcom)
+hist(daily_gold_diff_diff_dotcom)
+summary(daily_gold_diff_diff_dotcom)
+#     Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -7.762e-02 -6.404e-03  1.195e-03  2.605e-05  6.374e-03  5.672e-02 
+var(daily_gold_diff_diff_dotcom)
+# 0.0001772934
+sd(daily_gold_diff_diff_dotcom)
+# 0.01331516
+
+#****************
+
+hist(daily_gd_price_chng_GR)
+summary(daily_gd_price_chng_GR)
+#    Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -0.0657935 -0.0084565 -0.0004112  0.0002834  0.0098430  0.0955416 
+
+# difference in price changes
+daily_gold_diff_diff_GR <- diff(daily_gd_price_chng_GR)
+hist(daily_gold_diff_diff_GR)
+summary(daily_gold_diff_diff_GR)
+#      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -1.270e-01 -1.407e-02 -5.823e-04 -7.180e-06  1.457e-02  8.819e-02 
+var(daily_gold_diff_diff_GR)
+# 0.0007015153
+sd(daily_gold_diff_diff_GR)
+# 0.02648613
+
+#****************
+
+###THE NAs
+
+hist(daily_gd_price_chng_C19)
+summary(daily_gd_price_chng_C19)
+#     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
+# -0.04309 -0.00509 -0.00095 -0.00074  0.00568  0.02078      166 
+
+# difference in price changes
+daily_gold_diff_diff_C19 <- diff(daily_gd_price_chng_C19)
+hist(daily_gold_diff_diff_C19)
+summary(daily_gold_diff_diff_C19)
+var(daily_gold_diff_diff_C19)
+sd(daily_gold_diff_diff_C19)
+
+
+
 
 #***Chi-square tests on normal distribution
 
@@ -432,17 +623,16 @@ daily_pval_gold_diff_diff<- chiSqTest(daily_gold_diff_diff)
 "16294.3909251621"
 "p-value with df = {nbins - 2}:"
 "0"
+# Daily prices also follow a normal distribution, with a [near] 0
+# chance of the normal distribution having happened by chance.
 
-
-#QQ plots test of normality
-
-# QQ plots to see how distribution compares to normal distribution
+#QQ plots test of normality to see how distribution compares to normal distribution
 
 # Log Price Changes/percentage changes
 qqnorm(daily_gold_price_change)
 qqline(daily_gold_price_change) 
 #WHOA, that's not normal. This is 
-# a heavy-tailed QQ plot. We saw this slightly in the monthly data, where the 
+# a heavy-tailed QQ plot. We saw this with the monthly data as well, where the 
 # tails also did not follow a normal distribution, veering away from the 
 # y = x line. With the daily data, it is even clearer the tails are heavy.
 # See below for analysis that removes data points with a z-score > |2.5|
@@ -451,15 +641,9 @@ qqline(daily_gold_price_change)
 # Changes in log price changes/percentage changes
 qqnorm(daily_gold_diff_diff)
 qqline(daily_gold_diff_diff) 
-#WHOA, that's not normal either. While the 
-# middle of the Longer dark spot than price changes.
-# We saw this slightly in the monthly data, where the 
-# tails also did not follow a normal distribution, veering away from the 
-# y = x line. 
-
-
-#Localized QQ plot analysis
-# Use the subset function
+# This confirms as well that the differences in daily price
+# changes are normal except for the heavy tails.
+# The outliers may not follow a normal distribution among themselves.
 
 
 # Comparing to relationship with recessions. 
