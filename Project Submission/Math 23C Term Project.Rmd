@@ -288,12 +288,21 @@ optimal condition. Using the MASS and car libraries, unemployment was modeled
 as a linear function of all the other variables, which were then pruned if they
 did not contribute to the predictive capability of the model.
 
+```{r echo=FALSE, results='hide'}
+library(MASS)
+library(car)
+```
+
 ```{r}
 unemployment_reg <- lm(Unemployment ~ ., data=price_changes[,2:13])
 vif(unemployment_reg)
 summary(unemployment_reg)
-stepAIC(unemployment_reg)
 ```
+```{r echo=TRUE, results='hide'}
+stepAIC(unemployment_reg)
+# Output too long for PDF - view results in R script.
+```
+
 
 First, a model was created using all of the variables. Then, the variables were
 cross-examined to find their variance inflation factors. All of the values are
@@ -317,10 +326,15 @@ However, this may be more achievable using not only data from the current month,
 but several months of data history. Vector autoregression is a technique that allows
 a model to take into account a vector of lagged values of the independent variables.
 
-```{r}
+```{r echo=FALSE, results='hide'}
 library(vars)
+```
+```{r}
 var_aic <- VAR(price_changes[,2:13], type = "none", lag.max = 5, ic = "AIC")
+```
+```{r echo=TRUE, results='hide'}
 summary(var_aic)
+# Output too long for PDF - view results in R script.
 ```
 
 It turns out that trying to predict recessions from price history of these goods
