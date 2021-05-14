@@ -2,14 +2,14 @@
 # Distribution analyses
 # Daily data analyses: Goods prices and the different recessions
 # Monthly data analyses
-set.seed(24)
+set.seed(25)
 
 #************************
 #*Data set-up
 #************************
 
-#library(ggplot2)
-#library(zoo)
+library(ggplot2)
+library(zoo)
 # setwd("~/Dropbox (Personal)/Work 2021/- Math 23c/term project")
 # setwd("/Users/stai/math23c-rproject")
 
@@ -17,18 +17,18 @@ set.seed(24)
 # Get the data. Make sure to set the file paths to your local file path
 
 # Monthly data and recession indicators (monthly and daily)
-projdata <- read.csv("/Users/stai/math23c-rproject/source_data/commodities data.csv", stringsAsFactors=FALSE); head(projdata)
-HSY_data <- read.csv("/Users/stai/math23c-rproject/source_data/HSY.csv", stringsAsFactors=FALSE); head(HSY_data)
-rec_indic <-read.csv("/Users/stai/math23c-rproject/source_data/monthly recession indicator.csv", stringsAsFactors=FALSE); head(rec_indic)
-daily_rec_indic <-read.csv("/Users/stai/math23c-rproject/source_data/daily_USRECInd.csv", stringsAsFactors=FALSE); head(daily_rec_indic)
+projdata <- read.csv("source_data/commodities data.csv", stringsAsFactors=FALSE); head(projdata)
+HSY_data <- read.csv("source_data/HSY.csv", stringsAsFactors=FALSE); head(HSY_data)
+rec_indic <-read.csv("source_data/monthly recession indicator.csv", stringsAsFactors=FALSE); head(rec_indic)
+daily_rec_indic <-read.csv("source_data/daily_USRECInd.csv", stringsAsFactors=FALSE); head(daily_rec_indic)
 
 # Daily data for goods
-dailyWTI <- read.csv("/Users/stai/math23c-rproject/source_data/dailyWTI.csv", stringsAsFactors=FALSE); head(dailyWTI)
-dailySUG <- read.csv("/Users/stai/math23c-rproject/source_data/CANE_daily.csv", stringsAsFactors=FALSE); head(dailySUG)
-dailySOYB <- read.csv("/Users/stai/math23c-rproject/source_data/SOYB_daily.csv", stringsAsFactors=FALSE); head(dailySOYB)
-dailyWEAT <- read.csv("/Users/stai/math23c-rproject/source_data/WEAT_daily.csv", stringsAsFactors=FALSE); head(dailyWEAT)
-dailyGOLD <- read.csv("/Users/stai/math23c-rproject/source_data/GOLD_daily.csv", stringsAsFactors=FALSE); head(dailyGOLD)
-dailyCOCOA <- read.csv("/Users/stai/math23c-rproject/source_data/COCOA_daily.csv", stringsAsFactors=FALSE); head(dailyCOCOA)
+dailyWTI <- read.csv("source_data/dailyWTI.csv", stringsAsFactors=FALSE); head(dailyWTI)
+dailySUG <- read.csv("source_data/CANE_daily.csv", stringsAsFactors=FALSE); head(dailySUG)
+dailySOYB <- read.csv("source_data/SOYB_daily.csv", stringsAsFactors=FALSE); head(dailySOYB)
+dailyWEAT <- read.csv("source_data/WEAT_daily.csv", stringsAsFactors=FALSE); head(dailyWEAT)
+dailyGOLD <- read.csv("source_data/GOLD_daily.csv", stringsAsFactors=FALSE); head(dailyGOLD)
+dailyCOCOA <- read.csv("source_data/COCOA_daily.csv", stringsAsFactors=FALSE); head(dailyCOCOA)
 
 
 #********************************
@@ -363,7 +363,7 @@ curve(dnorm(x,
 gold_diff_diffFeb11Jan21 <- diff(diff(log(df_comm$Gold..USD...ozt.[121:240])))
 hist(gold_diff_diffFeb11Jan21,
      main=c("Changes in Monthly Gold Price Changes",
-     "from Feb 2011 to Feb 2021"),
+            "from Feb 2011 to Feb 2021"),
      xlab="Price of Gold/Troy Oz in USD",
      col="dark cyan")
 # Compared to the first half of the decade, the long tails are fatter.
@@ -577,8 +577,8 @@ sd(gold_GreatRec)
 # 67.14845
 
 # summary(gold_COVID)
-   #  Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-   # 1765    1834    1858    1858    1884    1957     166 
+#  Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+# 1765    1834    1858    1858    1884    1957     166 
 # Redo without the weekday holidays
 gold_COVID <- dailydata_ALL$priceGOLD[which(dailydata_ALL$rec_types_use.USRECD == 3 & dailydata_ALL$priceGOLD != ".")]
 gold_COVID <- as.numeric(gold_COVID)
