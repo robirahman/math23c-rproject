@@ -946,9 +946,9 @@ hist(daily_wti_diff_diff)
 summary(daily_wti_diff_diff)
 # Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
 #-53.7800  -1.0700  -0.0200  -0.0005   1.0300 101.1800 
-var(daily_gold_diff_diff)
+var(daily_wti_diff_diff)
 # 7.419232
-sd(daily_gold_diff_diff)
+sd(daily_wti_diff_diff)
 # 2.723827
 
 #****************
@@ -1218,10 +1218,8 @@ summary(sug_no_rec)
 hist(sug_no_rec)
 # Definitely not normal. Looks similar to wind speeds' distribution, but sugar
 # prices do not fit the usual use case for a Weibull distribution.
-
 var(sug_no_rec)
 # 24.92819
-
 sd(sug_no_rec)
 # 4.992814
 
@@ -1238,65 +1236,81 @@ var(sug_any_rec)
 sd(sug_any_rec)
 # 6.670416
 
-
 summary(sug_dotcom)
-#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 17.50   22.29   26.94   25.39   27.91   29.96 
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 18.37   19.80   21.73   21.62   23.35   24.66 
 hist(sug_dotcom)
-# the value of sug weighs heavily on the upper end during the dotcom crash
+# A lot of fluctuation during the dotcom recession.
+# More evenly distributed prices than during no recession period.
+# Comparisons to other recessions below.
 var(sug_dotcom)
-# 11.5367
+# 3.594999
 sd(sug_dotcom)
-# 3.396572
+# 1.896048
 
 summary(sug_GreatRec)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 30.28   51.51   69.34   77.75  108.69  145.31 
+# 4.920   6.445   6.900   6.724   7.270   7.810 
 hist(sug_GreatRec)
-# bimodal, with a larger bump at the lower end
+# long lower tail, negative skewness.
 var(sug_GreatRec)
-# 4508.915
+# 0.4793186
 sd(sug_GreatRec)
-# 31.82328
+#  0.6923284
+# The variance during the Great Recession is much lower than during
+# the dotcom recession.
 
 sug_COVID <- dailydata_ALL$priceSUG[which(dailydata_ALL$rec_types_use.USRECD == 3 & dailydata_ALL$priceSUG != ".")]
 sug_COVID <- as.numeric(sug_COVID)
 summary(sug_COVID)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# -36.98   36.47   40.53   39.24   45.42   63.43
+# 15.78   17.04   17.84   18.21   19.25   21.80
 hist(sug_COVID)
-# Centered around upper end, with the outlier of -40. If one recalls the news
-# during this time, this should bring to mind the moment when the OPEC countries
-# were at a loss on what to do.
+# Heavier upper tail than during Great Recession; has a slight positive skewness.  
 var(sug_COVID)
-# 138.5191
+# 2.385077
 sd(sug_COVID)
-# 11.76941
+# 1.544369
 
 #Line graphs
 plot(daily_price_SUG, type = 'l')
+# Upswings around recessionary periods. 
 plot(sug_no_rec, type = 'l')
+# No recession looks very similar to overall prices pattern
 plot(sug_any_rec, type= 'l')
+# Huge trough 
 plot(sug_dotcom, type = 'l')
+# downward trend; steep decline
 plot(sug_GreatRec, type='l')
+# Steep decline in the latter months before climbing back up.
 plot(sug_COVID, type='l')
-# These all follow a random walk. No periodicity.
+# During COVID recession months, there is a consistent downward trend, with no extreme declines.
+# All follow random walk non-patterns
 
 # Log comparisons to rescale
 hist(log(daily_price_SUG))
 hist(log(sug_no_rec))
-#both of these are heavy on the right
+#Very fat curves
 
 hist(log(sug_any_rec))
-# no recognizable distribution at first glance
+# mean(log(sug_any_rec)) is 2.462173
+# Bimodal around the mean.
 hist(log(sug_dotcom))
-# Possibly a beta distribution?
+# Similarly, bimodal around the mean
+# mean(log(sug_dotcom)) = 3.069934 
 
 hist(log(sug_GreatRec))
+# Bimodal around the mean 
+# mean(log(sug_GreatRec)) = 1.899976
 hist(log(sug_COVID))
+# Not bimodal, unlike the others. A very fat curve with a small peak
+# mean(log(sug_COVID)) = 2.898559
+curve(dnorm(x, mean(log(sug_COVID)), sd = sqrt(var(log(sug_COVID)))), add=TRUE, col = "red")
+# Does not fit well; ot a normal distribution
 
 #Difference in log values over time
 hist(diff(log(daily_price_SUG)))
+# Very small, nothing that stands out
 
 
 #-------------
@@ -1304,9 +1318,6 @@ hist(diff(log(daily_price_SUG)))
 #
 #------------
 
-# Warning: min(daily_price_SUG) = -36.98; there are 
-# some negative values that are being used in log commands
-# because of oil market idiosyncrasies. Using non-rescaled prices instead.
 daily_sug_price_change <- diff(daily_price_SUG)
 daily_sug_price_change_no_rec <- diff(sug_no_rec)
 daily_sug_price_change_rec <- diff(sug_any_rec)
@@ -1318,45 +1329,44 @@ daily_sug_price_chng_C19 <- diff(sug_COVID)
 
 hist(daily_sug_price_change)
 summary(daily_sug_price_change)
-#    Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-# -55.29000  -0.69000   0.05000   0.00677   0.75000  45.89000
+# Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+# -2.219999 -0.090000  0.000000 -0.001721  0.070000 16.810001 
 var(daily_sug_price_change)
-# 3.163682
+# 0.1608409
 sd(daily_sug_price_change)
-# 1.778674
+# 0.4010498
 
 # difference in price changes
 daily_sug_diff_diff <- diff(diff(daily_price_SUG))
 hist(daily_sug_diff_diff)
 # Very small differences in price changes themselves! Always clustered around 0
 summary(daily_sug_diff_diff)
-# Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-#-53.7800  -1.0700  -0.0200  -0.0005   1.0300 101.1800 
-var(daily_gold_diff_diff)
-# 7.419232
-sd(daily_gold_diff_diff)
-# 2.723827
+#     Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -16.350002  -0.140000   0.000000  -0.000074   0.130002  16.810001 
+var(daily_sug_diff_diff)
+# 0.3365551
+sd(daily_sug_diff_diff)
+# 0.5801336
 
 #****************
 
 hist(daily_sug_price_change_rec)
 summary(daily_sug_price_change_rec)
-#     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-# -55.29000  -0.85500   0.07000   0.04509   0.93000  80.18000 
+#     Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -11.430001  -0.090000   0.000000  -0.008352   0.050000  15.960000
 
 # difference in price changes
 daily_sug_diff_diff_rec <- diff(daily_sug_price_change_rec)
 hist(daily_sug_diff_diff_rec)
-# Even during a recession the difference in price changes cluster around
-# 0. The variance is larger, but remains reasonably-sized, with a standard
-# deviation of 6.849487.
+# Changes in price changes for sugar cluster around 0, but there
+# are long thin tails
 summary(daily_sug_diff_diff_rec)
-#      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-# -80.65000  -1.37750  -0.06500  -0.00356   1.28500 101.18000  
+#     Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+#-16.050001  -0.130000   0.000000   0.000085   0.122500  16.030000   
 var(daily_sug_diff_diff_rec)
-# 46.91547
+# 1.128211
 sd(daily_sug_diff_diff_rec)
-# 6.849487
+# 1.062173
 
 #****************
 
