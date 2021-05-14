@@ -506,7 +506,7 @@ gold_COVID <- daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 3)]
 hist(daily_price_GOLD, breaks=50,
      main="Daily Gold Prices from Jan 2001—Feb 2021", 
      xlab = "Prices in USD", ylab = "Frequency", col="cyan")
-# Historically, gold has had a 
+# Historically, gold prices in aggregate are bimodal.
 summary(daily_price_GOLD)
 #  Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #256.7   544.8  1173.2  1015.8  1327.8  2061.5
@@ -519,7 +519,9 @@ sd(daily_price_GOLD)
 summary(gold_no_rec)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 256.7   547.7  1209.2  1038.0  1336.8  2061.5 
-hist(gold_no_rec)
+hist(gold_no_rec,
+     main=c("Daily Gold Prices from Jan 2001—Feb 2021", "Non-Recessionary"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark cyan")
 # bimodal, likely due to the price of gold being so much higher in the second decade
 var(gold_no_rec)
 # 223408.9
@@ -540,7 +542,9 @@ gold_any_rec <- as.numeric(gold_any_rec)
 summary(gold_any_rec)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 257.0   773.3   913.9  1048.5  1716.5  2061.5
-hist(gold_any_rec)
+hist(gold_any_rec,
+     main=c("Daily Gold Prices from Jan 2001—Feb 2021", "Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="cyan")
 # clustered around the prices during these time periods
 var(gold_any_rec)
 # 331198.8
@@ -551,7 +555,9 @@ sd(gold_any_rec)
 summary(gold_dotcom)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 257.0   267.4   273.1   273.5   277.7   292.9 
-hist(gold_dotcom)
+hist(gold_dotcom,
+     main=c("Daily Gold Prices Post-DotCom Bubble", "Recession: Apr 2001 — Nov 2001"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark cyan")
 # normal with heavy tails; possible positive skewness
 var(gold_dotcom)
 # 69.66963
@@ -561,7 +567,9 @@ sd(gold_dotcom)
 summary(gold_GreatRec)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 692.5   864.0   910.0   894.5   938.8  1020.5
-hist(gold_GreatRec)
+hist(gold_GreatRec,
+     main=c("Daily Gold Prices: Great Recession", "Recession: Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light blue")
 # negative skewness
 var(gold_GreatRec)
 # 4508.915
@@ -577,7 +585,9 @@ gold_COVID <- as.numeric(gold_COVID)
 summary(gold_COVID)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 1472    1728    1837    1814    1897    2062 
-hist(gold_COVID)
+hist(gold_COVID,
+     main=c("Daily Gold Prices during COVID-19 Recession", "Recession: Mar 2020 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="blue")
 # Heavy and long tails
 var(gold_COVID)
 # 13042.65
@@ -585,40 +595,67 @@ sd(gold_COVID)
 # 114.2044
 
 #Line graphs
-plot(daily_price_GOLD, type = 'l')
-plot(gold_no_rec, type = 'l')
+plot(daily_price_GOLD, type = 'l',
+     main=c("Daily Gold Prices", "Jan 2001 — Feb 2021"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
+plot(gold_no_rec, type = 'l',
+     main=c("Daily Gold Prices","Non-Recessionary Periods", "Jan 2001 — Feb 2021"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
 
-plot(gold_any_rec, type= 'l')
-plot(gold_dotcom, type = 'l')
+plot(gold_any_rec, type= 'l',
+     main=c("Daily Gold Prices","Recessionary Periods", "Jan 2001 — Feb 2021"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
+#Two big peaks
+plot(gold_dotcom, type = 'l',
+     main=c("Daily Gold Prices","DotCom Crash", "Apr 2001 — Nov 2001"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
 # Two great peaks, overall very slowly increasing trend
 
-plot(gold_GreatRec, type='l')
+plot(gold_GreatRec, type='l', 
+     main=c("Daily Gold Prices","Great Recession", "Jan 2008 — Jun 2009"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
 # One giant dip, followed by increasing trend
 
-plot(gold_COVID, type='l')
+plot(gold_COVID, type='l',
+     main=c("Daily Gold Prices","COVID-19 Recession", "Mar 2020 — Feb 2021"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
 # Overall decreasing trend
 
 # Log comparisons of gold prices to rescale
-hist(log(daily_price_GOLD))
+hist(log(daily_price_GOLD),
+     main=c("Log of Daily Gold Prices", "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="cyan")
 
-hist(log(gold_no_rec))
+hist(log(gold_no_rec),
+     main=c("Log of Daily Gold Prices", "Non-Recessionary Periods", "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="cyan")
 # negative skewness
 
-hist(log(gold_any_rec))
+hist(log(gold_any_rec),
+     main=c("Log of Daily Gold Prices", "Recessionary Periods", "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark cyan")
 #three clusters around certain prices, aligned with the log price of gold during
 # each recession
 
-hist(log(gold_dotcom))
+hist(log(gold_dotcom),
+     main=c("Log of Daily Gold Prices", "DotCom Crash", "Apr 2001 — Nov 2001"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light blue")
 #heavy-tailed normal
 
-hist(log(gold_GreatRec))
+hist(log(gold_GreatRec),
+     main=c("Log of Daily Gold Prices", "Great Recession", "Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="blue")
 #negative skewness
 
-hist(log(gold_COVID))
-#positive skewness
+hist(log(gold_COVID),
+     main=c("Log of Daily Gold Prices", "COVID-19 Recession", "Mar 2020 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark blue")
+#negative skewness, like during the Great Recession
 
 #Difference in log values over time
-hist(diff(log(daily_price_GOLD)))
+hist(diff(log(daily_price_GOLD)),
+     main=c("Differences Between Log of Daily Gold Prices", "Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="green")
 
 
 #-------------
@@ -635,7 +672,10 @@ daily_gd_price_chng_C19 <- diff(log(gold_COVID))
 
 #-------------------------------------
 
-hist(daily_gold_price_change)
+hist(daily_gold_price_change,
+     main=c("Differences Between Daily Gold Prices", "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light cyan")
+# Very clustered around 0; long thin tails
 summary(daily_gold_price_change)
 #      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
 #-0.0891278 -0.0052370  0.0004333  0.0003667  0.0061726  0.0955416 
@@ -646,7 +686,11 @@ sd(daily_gold_price_change)
 
 # difference in price changes
 daily_gold_diff_diff <- diff(diff(log(daily_price_GOLD)))
-hist(daily_gold_diff_diff)
+hist(daily_gold_diff_diff,
+     main=c("Differences Between Changes in Daily Gold Prices", "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light green")
+# The changes of the price changes similarly cluster greatly around 0
+# and have long, thin tails.
 summary(daily_gold_diff_diff)
 #   Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
 #-1.270e-01 -8.403e-03 -1.802e-04 -2.300e-07  8.609e-03  1.151e-01
@@ -657,14 +701,26 @@ sd(daily_gold_diff_diff)
 
 #****************
 
-hist(daily_gold_price_change_rec)
+hist(daily_gold_price_change_rec,
+     main=c("Changes in Daily Gold Prices", "Recessionary Periods", 
+            "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark cyan")
+# This is clustered around 0, but centered around .5. There is
+# a very long tail extending out from .1 USD. Gold prices
+# are stable, with some extreme changes in the positive direction.
 summary(daily_gold_price_change_rec)
 #    Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
 # -0.0857106 -0.0062178  0.0002771  0.0024089  0.0078989  1.1186148 
 
 # difference in price changes
 daily_gold_diff_diff_rec <- diff(daily_gold_price_change_rec)
-hist(daily_gold_diff_diff_rec)
+hist(daily_gold_diff_diff_rec,
+     main=c("Differences in Changes of Daily Gold Prices", "Recessionary Periods", 
+            "Jan 2001 — Feb 2021"),
+     col = "dark blue")
+# The differences in price changes are extremely centered around 0
+# with long very thin tails on either end. Gold prices change in
+# consistent magnitudes, but they can change in either direction occasionally.
 summary(daily_gold_diff_diff_rec)
 #    Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
 # -1.0897751 -0.0113805 -0.0004483 -0.0000163  0.0111433  1.1184327 
@@ -682,7 +738,14 @@ summary(daily_gd_price_chng_dotcom)
 
 # difference in price changes
 daily_gold_diff_diff_dotcom <- diff(daily_gd_price_chng_dotcom)
-hist(daily_gold_diff_diff_dotcom)
+hist(daily_gold_diff_diff_dotcom,
+     main=c("Changes in Daily Gold Prices", 
+            "DotCom Crash", "Apr 2001 — Nov 2001"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light green")
+# Same behavior within the dot-com crash: the changes
+# of the price changes are stable and clustered around 0. They rarely change,
+# but when they do they can change in either direction, and this has
+# happened often enough to create a long thin tail in both directions.
 summary(daily_gold_diff_diff_dotcom)
 #     Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
 # -7.762e-02 -6.404e-03  1.195e-03  2.605e-05  6.374e-03  5.672e-02 
@@ -700,7 +763,14 @@ summary(daily_gd_price_chng_GR)
 
 # difference in price changes
 daily_gold_diff_diff_GR <- diff(daily_gd_price_chng_GR)
-hist(daily_gold_diff_diff_GR)
+hist(daily_gold_diff_diff_GR,
+     main=c("Changes in Daily Gold Prices", 
+            "Great Recession", "Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="green")
+# Changes in price changes are less tightly clustered around 0.
+# The long thin tails in either direction are fatter than for
+# the dotcom recession, suggesting greater volatility during this time.
+# The standard deviation below supports this.
 summary(daily_gold_diff_diff_GR)
 #      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
 # -1.270e-01 -1.407e-02 -5.823e-04 -7.180e-06  1.457e-02  8.819e-02 
@@ -711,14 +781,25 @@ sd(daily_gold_diff_diff_GR)
 
 #****************
 
-hist(daily_gd_price_chng_C19)
+hist(daily_gd_price_chng_C19,
+     main=c("Changes in Daily Gold Prices",
+            "COVID-19 Recession", 
+            "Mar 2020 — Feb 2021"), col = "dark green",
+     xlab = "Price Changes in USD", ylab = "Frequency")
+# During COVID-19, the gold prices were also less tightly clustered around 0, 
+# evenly spreading out in both directions.
 summary(daily_gd_price_chng_C19)
 #      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
 # -0.0540095 -0.0055388  0.0006364  0.0003672  0.0071458  0.0678994 
 
 # difference in price changes
 daily_gold_diff_diff_C19 <- diff(daily_gd_price_chng_C19)
-hist(daily_gold_diff_diff_C19)
+hist(daily_gold_diff_diff_C19,
+     main=c("Differences in Changes in Daily Gold Prices",
+            "COVID-19 Recession", 
+            "Mar 2020 — Feb 2021"), 
+     xlab="Changes in USD", ylab = "Frequency", col="dark green")
+# Less tightly clustered around 0, with long thin tails
 summary(daily_gold_diff_diff_C19)
 #    Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
 # -5.458e-02 -1.006e-02 -6.350e-04 -3.417e-05  9.685e-03  7.454e-02 
@@ -745,7 +826,8 @@ daily_pval_gold_diff_diff<- chiSqTest(daily_gold_diff_diff)
 #QQ plots test of normality to see how distribution compares to normal distribution
 
 # Log Price Changes/percentage changes
-qqnorm(daily_gold_price_change)
+qqnorm(daily_gold_price_change,
+       main="Normal Q-Q Plot for Price Changes in Gold")
 qqline(daily_gold_price_change) 
 #WHOA, that's not normal. This is 
 # a heavy-tailed QQ plot. We saw this with the monthly data as well, where the 
@@ -754,34 +836,60 @@ qqline(daily_gold_price_change)
 
 
 # Changes in log price changes/percentage changes
-qqnorm(daily_gold_diff_diff)
+qqnorm(daily_gold_diff_diff,
+       main=c("Normal Q-Q Plot", "Differences of Price Changes in Gold"))
 qqline(daily_gold_diff_diff) 
 # This confirms as well that the differences in daily price
-# changes do not follow a normal distribution.
+# changes do not follow a normal distribution.Look to the tails.
 
 #****************************************
 #*Recap: Histograms and the good's normality
 #****************************************
 
-# Comparing to relationship with recessions. 
-hist(daily_price_GOLD[which(dailydata_ALL$rec_inds_use.USRECD == 0)])
-hist(daily_price_GOLD[which(dailydata_ALL$rec_inds_use.USRECD == 1)])
+# Comparing to relationship with recessions.Summary for these
+# histograms after these histograms. 
+hist(daily_price_GOLD[which(dailydata_ALL$rec_inds_use.USRECD == 0)],
+     main=c("Daily Gold Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light cyan")
+hist(daily_price_GOLD[which(dailydata_ALL$rec_inds_use.USRECD == 1)],
+     main=c("Daily Gold Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark cyan")
 
-#frequency
-hist(daily_price_GOLD[which(dailydata_ALL$rec_inds_use.USRECD == 0)], breaks=50)
-hist(daily_price_GOLD[which(dailydata_ALL$rec_inds_use.USRECD == 1)], breaks=50)
+#Binned for clarification
+hist(daily_price_GOLD[which(dailydata_ALL$rec_inds_use.USRECD == 0)], breaks=50,
+     main=c("Daily Gold Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light cyan")
+hist(daily_price_GOLD[which(dailydata_ALL$rec_inds_use.USRECD == 1)], breaks=50,
+     main=c("Daily Gold Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark cyan")
 
 #Types of recessions
-hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 0)])
-hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 1)])
-hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 2)])
-hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 3)])
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 0)],
+     main=c("Daily Gold Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light cyan")
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 1)],
+     main=c("Daily Gold Prices Post-DotCom Bubble", "Recession: Apr 2001 — Nov 2001"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light green")
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 2)],
+     main=c("Daily Gold Prices: Great Recession", "Recession: Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="green")
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 3)],
+     main=c("Daily Gold Prices during COVID-19 Recession", "Recession: Mar 2020 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark green")
 
-#frequency
-hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 0)], breaks=50)
-hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 1)], breaks=50)
-hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 2)], breaks=50)
-hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 3)], breaks=50)
+#binned into 50
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 0)], breaks=50,
+     main=c("Daily Gold Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light cyan")
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 1)], breaks=50,
+     main=c("Daily Gold Prices Post-DotCom Bubble", "Recession: Apr 2001 — Nov 2001"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light green")
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 2)], breaks=50,
+     main=c("Daily Gold Prices: Great Recession", "Recession: Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="green")
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 3)], breaks=50,
+     main=c("Daily Gold Prices during COVID-19 Recession", "Recession: Mar 2020 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark green")
 
 # To recap: none of these follows a normal distribution. We next test to see if 
 # the prices or price changes follow a Pareto distribution.
@@ -810,7 +918,7 @@ invCDF <- function(q) 1 / (1-q)^(1/4)
 quantiles <- runif(10000)
 pareto_draws <- invCDF(quantiles)
 
-hist(pareto_draws, prob=TRUE)
+hist(pareto_draws, prob=TRUE, main="Pareto Draws")
 curve(paretopdf, col="darkblue", lwd=3.2, add=TRUE)
 # Note that the curve of the pareto's density function matches the values that were
 # randomly drawn according to the distribution function's inverse.
@@ -834,27 +942,41 @@ sample_quantiles_gold <- (1:length_GOLD_noNA) / length(length_GOLD_noNA)
 theoretical_quantiles_gold <- CDF(sort(as.numeric(Gold_noNA)))
 
 # This QQ plot illustrates how well the theoretical distribution matches the empirical distribution.
-plot(theoretical_quantiles_gold, sample_quantiles_gold)
+plot(theoretical_quantiles_gold, sample_quantiles_gold,
+     main="QQ Plot for Pareto Distribution: Gold Prices",
+     xlab="Theoretical Quantiles",
+     ylab="Sample Quantiles")
+# We do not see a straight line here for the relationship between the theoretical
+# and the sample quantiles.
 
 # Rescale using log
 
 alpha = 1.25
 pdf = function(y) alpha*exp(y)^(-alpha-1)
-hist(log(as.numeric(Gold_noNA)), prob=TRUE)
+hist(log(as.numeric(Gold_noNA)), prob=TRUE,
+     main = "Log of Gold Prices: Does a Pareto Fit?",
+     xlab="Gold Prices", col="purple")
 curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
 
 # Does the curve fit the histogram? It appears not, at least not for the price of gold
 
-# Quick assessment of gold's price changes
+# Assessment of gold's price changes
 Gold_delt_noNA <- diff(as.numeric(Gold_noNA))
 Gold_sample_quantiles_delta <- (1:length(Gold_delt_noNA)) / length(Gold_delt_noNA)
 gold_delt_th_quant <- CDF(sort(Gold_delt_noNA))
-plot(gold_delt_th_quant, Gold_sample_quantiles_delta)
-# Definitely does not follow a 45 degree line; these values do not appear to follow a Pareto distribution.
+plot(gold_delt_th_quant, Gold_sample_quantiles_delta,
+     main="QQ Plot for Pareto Distribution: Changes in Gold Prices",
+     xlab="Theoretical Quantiles",
+     ylab="Sample Quantiles")
+# Definitely does not follow a 45 degree line; 
+#these values do not appear to follow a Pareto distribution.
 
 alpha = 1.25
 pdf = function(y) alpha*exp(y)^(-alpha-1)
-hist(log(Gold_delt_noNA), prob=TRUE)
+hist(log(Gold_delt_noNA), prob=TRUE,
+     main = "Log of Gold Prices: Does a Pareto Fit?",
+     xlab="Log of Changes in Gold Prices",
+     col = "purple")
 curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
 # The Pareto distribution does not lie over the log(price changes of gold) histogram very well at all. 
 # The scale of price changes can't be attributed to only a small proportion of the price changes.
@@ -1938,7 +2060,7 @@ sd(daily_weat_diff_diff_GR)
 hist(daily_weat_price_chng_C19, main=c("Changes in Daily Wheat Prices",
                                        "COVID-19 Recession", 
                                        "Mar 2020 — Feb 2021"), 
-     xlab="Index: Daily", ylab = "Prices in USD", col="light yellow")
+     xlab="Changes in USD", ylab = "Frequency", col="light yellow")
 # The price changes remain clustered around the near-0 mean with a very long and thin
 # upper tail.
 summary(daily_weat_price_chng_C19)
@@ -1950,7 +2072,7 @@ daily_weat_diff_diff_C19 <- diff(daily_weat_price_chng_C19)
 hist(daily_weat_diff_diff_C19, main=c("Differences in Changes in Daily Wheat Prices",
                                       "COVID-19 Recession", 
                                       "Mar 2020 — Feb 2021"), 
-     xlab="Index: Daily", ylab = "Prices in USD", col="yellow")
+     xlab="Changes in USD", ylab = "Frequency", col="yellow")
 # Continues to cluster around the near-0 mean for differences in price changes.
 # Continues to have extreme values that create very long and thin tails.
 # However, continues to be very clustered around a difference of 0.
