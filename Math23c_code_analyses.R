@@ -1008,7 +1008,9 @@ wti_COVID <- daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 3)]
 #------------------------------------
 
 # Histogram of prices
-hist(daily_price_WTI, breaks=50)
+hist(daily_price_WTI, breaks=50,
+     main="Daily Oil Prices from Jan 2001—Feb 2021", 
+     xlab = "Prices in USD", ylab = "Frequency", col="brown")
 # Definitely not normal
 summary(daily_price_WTI)
 #    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
@@ -1022,12 +1024,13 @@ sd(daily_price_WTI)
 summary(wti_no_rec)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # -36.98   44.13   59.17   62.49   83.25  114.80 
-hist(wti_no_rec)
-# Very even and wide distribution during a recession;
-# the price distribution looks almost uniform for frequencies of 400.
-# Seems to confirm that oil is an inelastic good: no matter the cost,
-# the people buy at the usual amounts.
-# There is still a peak around 50 dollars/barrel.
+hist(wti_no_rec,
+     main=c("Daily Oil Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="brown")
+# When there is no recession: there is a long thin lower tail,
+# but for the most part, prices are cetnered around the mean.
+# The distribution looks even and almost uniform, save for one peak.
+# Does not appear like a curv.
 
 var(wti_no_rec)
 # 593.0466
@@ -1041,8 +1044,12 @@ wti_any_rec <- as.numeric(wti_any_rec)
 summary(wti_any_rec)
 #    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # -36.98   28.82   43.17   57.48   75.14  145.31 
-hist(wti_any_rec)
-# clustered around the $40 - $50 mark, with a long and heavy upper tail
+hist(wti_any_rec,
+     main=c("Daily Oil Prices from Jan 2001—Feb 2021", "Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light grey")
+# Negative skewness, and the upper tail is shorter but fatter than the
+# lower thin tail. There is greater variance in oil prices
+# during a recession.
 var(wti_any_rec)
 # 1214.918
 sd(wti_any_rec)
@@ -1052,7 +1059,9 @@ sd(wti_any_rec)
 summary(wti_dotcom)
 #   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 17.50   22.29   26.94   25.39   27.91   29.96 
-hist(wti_dotcom)
+hist(wti_dotcom,
+     main=c("Daily Oil Prices Post-DotCom Bubble", "Recession: Apr 2001 — Nov 2001"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="brown")
 # the value of wti weighs heavily on the upper end during the dotcom crash
 var(wti_dotcom)
 # 11.5367
@@ -1062,7 +1071,9 @@ sd(wti_dotcom)
 summary(wti_GreatRec)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 30.28   51.51   69.34   77.75  108.69  145.31 
-hist(wti_GreatRec)
+hist(wti_GreatRec,
+     main=c("Daily Oil Prices: Great Recession", "Recession: Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark grey")
 # bimodal, with a larger bump at the lower end
 var(wti_GreatRec)
 # 4508.915
@@ -1074,7 +1085,9 @@ wti_COVID <- as.numeric(wti_COVID)
 summary(wti_COVID)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # -36.98   36.47   40.53   39.24   45.42   63.43
-hist(wti_COVID)
+hist(wti_COVID,
+     main=c("Daily Oil Prices during COVID-19 Recession", "Recession: Mar 2020 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light grey")
 # Centered around upper end, with the outlier of -40. If one recalls the news
 # during this time, this should bring to mind the moment when the OPEC countries
 # were at a loss on what to do.
@@ -1083,13 +1096,25 @@ var(wti_COVID)
 sd(wti_COVID)
 # 11.76941
 
-#Line graphs
-plot(daily_price_WTI, type = 'l')
-plot(wti_no_rec, type = 'l')
-plot(wti_any_rec, type= 'l')
-plot(wti_dotcom, type = 'l')
-plot(wti_GreatRec, type='l')
-plot(wti_COVID, type='l')
+#Line graphs as an overview
+plot(daily_price_WTI, type = 'l',
+     main=c("Daily Oil Prices", "Jan 2001 — Feb 2021"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
+plot(wti_no_rec, type = 'l',
+     main=c("Daily Oil Prices","Non-Recessionary Periods", "Jan 2001 — Feb 2021"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
+plot(wti_any_rec, type= 'l',
+     main=c("Daily Oil Prices","Recessionary Periods", "Jan 2001 — Feb 2021"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
+plot(wti_dotcom, type = 'l',
+     main=c("Daily Oil Prices","DotCom Crash", "Apr 2001 — Nov 2001"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
+plot(wti_GreatRec, type='l',
+     main=c("Daily Oil Prices","Great Recession", "Jan 2008 — Jun 2009"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
+plot(wti_COVID, type='l',
+     main=c("Daily Oil Prices","COVID-19 Recession", "Mar 2020 — Feb 2021"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
 # These all follow a random walk. No periodicity.
 
 # Log comparisons to rescale
@@ -1097,17 +1122,29 @@ hist(log(daily_price_WTI))
 hist(log(wti_no_rec))
 #both of these are heavy on the right
 
-hist(log(wti_any_rec))
+hist(log(wti_any_rec),
+     main=c("Log of Daily Oil Prices", "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="brown")
 # no recognizable distribution at first glance
-hist(log(wti_dotcom))
-# Possibly a beta distribution?
+hist(log(wti_dotcom),
+     main=c("Log of Daily Oil Prices", "Recessionary Periods", "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark grey")
+# Negative skewness. No recognizable underlying distribution.
 
-hist(log(wti_GreatRec))
-hist(log(wti_COVID))
+hist(log(wti_GreatRec),
+     main=c("Log of Daily Oil Prices", "Great Recession", "Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light grey")
+hist(log(wti_COVID),
+     main=c("Log of Daily Oil Prices", "COVID-19 Recession", "Mar 2020 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="grey")
 
 #Difference in log values over time
-hist(diff(log(daily_price_WTI)))
-
+hist(diff(log(daily_price_WTI)),
+     main=c("Differences Between Log of Daily Oil Prices", "Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD per WTI Barrel", ylab = "Frequency", col="brown")
+# Very tightly clustered around 0. Oils is fairly stable, but there
+# are long thin tails on either end. The upper tail is longer, indicating
+# volatility in the positive direction.
 
 #-------------
 # Daily: price changes
@@ -1126,7 +1163,9 @@ daily_wti_price_chng_C19 <- diff(wti_COVID)
 
 #-------------------------------------
 
-hist(daily_wti_price_change)
+hist(daily_wti_price_change,
+     main=c("Differences Between Daily Oil Prices", "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="brown")
 summary(daily_wti_price_change)
 #    Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
 # -55.29000  -0.69000   0.05000   0.00677   0.75000  45.89000
@@ -1137,7 +1176,9 @@ sd(daily_wti_price_change)
 
 # difference in price changes
 daily_wti_diff_diff <- diff(diff(daily_price_WTI))
-hist(daily_wti_diff_diff)
+hist(daily_wti_diff_diff,
+     main=c("Differences Between Changes in Daily Oil Prices", "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark grey")
 # Very small differences in price changes themselves! Always clustered around 0
 summary(daily_wti_diff_diff)
 # Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
@@ -1156,10 +1197,14 @@ summary(daily_wti_price_change_rec)
 
 # difference in price changes
 daily_wti_diff_diff_rec <- diff(daily_wti_price_change_rec)
-hist(daily_wti_diff_diff_rec)
+hist(daily_wti_diff_diff_rec,
+     main=c("Changes in Daily Oil Prices", "Recessionary Periods", 
+            "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="brown")
 # Even during a recession the difference in price changes cluster around
 # 0. The variance is larger, but remains reasonably-sized, with a standard
-# deviation of 6.849487.
+# deviation of 6.849487. The tails on both ends are extremely thin and not smooth,
+# following the previous findings.
 summary(daily_wti_diff_diff_rec)
 #      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
 # -80.65000  -1.37750  -0.06500  -0.00356   1.28500 101.18000  
@@ -1177,7 +1222,13 @@ summary(daily_wti_price_chng_dotcom)
 
 # difference in price changes
 daily_wti_diff_diff_dotcom <- diff(daily_wti_price_chng_dotcom)
-hist(daily_wti_diff_diff_dotcom)
+hist(daily_wti_diff_diff_dotcom,
+     main=c("Changes in Daily Oil Prices", 
+            "DotCom Crash", "Apr 2001 — Nov 2001"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light grey")
+# The price changes are clustered around 0, but even-keeled on both
+# ends. There are heavy tails in both directions, suggesting
+# price changes during the dot com crash went evenly in both directions.
 summary(daily_wti_diff_diff_dotcom)
 #      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
 # -4.360000 -0.560000 -0.010000  0.001503  0.550000  4.250000 
@@ -1188,14 +1239,22 @@ sd(daily_wti_diff_diff_dotcom)
 
 #****************
 
-hist(daily_wti_price_chng_GR)
+hist(daily_wti_price_chng_GR,
+     main=c("Changes in Daily Oil Prices", 
+            "Great Recession", "Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark grey")
+# Super long and thin tails, but longer on the upper end, suggesting that
+# there was more volatility in the positive direction from day-to-day.
 summary(daily_wti_price_chng_GR)
 #     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
 # -14.76000  -1.68250  -0.01500  -0.09482   1.51500  18.56000 
 
 # difference in price changes
 daily_wti_diff_diff_GR <- diff(daily_wti_price_chng_GR)
-hist(daily_wti_diff_diff_GR)
+hist(daily_wti_diff_diff_GR,
+     main=c("Differences in Changes of Daily Oil Prices", 
+            "Great Recession", "Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark grey")
 # There is a longer lower tail for this due to the value < -30.
 # Much more volatility during the Great Recession than there was in the dotcom crash.
 # The greater variance confirms this.
@@ -1209,18 +1268,29 @@ sd(daily_wti_diff_diff_GR)
 
 #****************
 
-hist(daily_wti_price_chng_C19)
+hist(daily_wti_price_chng_C19,
+     main=c("Changes in Daily Oil Prices",
+            "COVID-19 Recession", 
+            "Mar 2020 — Feb 2021"), 
+     xlab="Price Changes in USD", ylab = "Frequency", col="brown")
 summary(daily_wti_price_chng_C19)
 #      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
 # -55.29000  -0.51000   0.18000   0.05932   0.87000  45.89000  
 
 # difference in price changes
 daily_wti_diff_diff_C19 <- diff(daily_wti_price_chng_C19)
-hist(daily_wti_diff_diff_C19)
+hist(daily_wti_diff_diff_C19,
+     main=c("Differences in Changes in Daily Oil Prices",
+            "COVID-19 Recession", 
+            "Mar 2020 — Feb 2021"), 
+     xlab="Changes in USD", ylab = "Frequency", col="brown")
 # During COVID-19, there was much greater volatility. 
-# Note the two long tails, due to the extreme outliers of
-# changes in price changes at both the upper and lower ends.
-# The difference in price changes has a greater variance.
+# Note the two long tails in the price changes, due to the extreme outliers of
+# changes in price changes at both the upper and lower ends. For changes in
+# changes, the upper tail is much longer due to an extreme outlier. There
+# is also an extreme outlier on the left. For the most part, however,
+# these differences of price changes remain clustered around 0, suggesting
+# that oil prices during COVID-19 were for the most part stable.
 summary(daily_wti_diff_diff_C19)
 # Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
 #-53.78000  -1.11250  -0.13500  -0.00956   0.95000 101.18000 
@@ -1247,7 +1317,8 @@ daily_pval_wti_diff_diff<- chiSqTest(daily_wti_diff_diff)
 #QQ plots test of normality to see how distribution compares to normal distribution
 
 # Log Price Changes/percentage changes
-qqnorm(daily_wti_price_change)
+qqnorm(daily_wti_price_change,
+       main="Normal Q-Q Plot for Price Changes in Oil")
 qqline(daily_wti_price_change) 
 # The data usually follow the normal distribution, but the outliers 
 # of price changes creates heavy tails. The distribution is therefore not
@@ -1255,7 +1326,8 @@ qqline(daily_wti_price_change)
 
 
 # Changes in price changes
-qqnorm(daily_wti_diff_diff)
+qqnorm(daily_wti_diff_diff,
+       main=c("Normal Q-Q Plot", "Differences of Price Changes in Oil"))
 qqline(daily_wti_diff_diff) 
 # Changes in price changes are even less normal, and even more heavily
 # tailed than the price changes.
@@ -1265,24 +1337,48 @@ qqline(daily_wti_diff_diff)
 #****************************************
 
 # Comparing to relationship with recessions. 
-hist(daily_price_WTI[which(dailydata_ALL$rec_inds_use.USRECD == 0)])
-hist(daily_price_WTI[which(dailydata_ALL$rec_inds_use.USRECD == 1)])
+hist(daily_price_WTI[which(dailydata_ALL$rec_inds_use.USRECD == 0)],
+     main=c("Daily Oil Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="brown")
+hist(daily_price_WTI[which(dailydata_ALL$rec_inds_use.USRECD == 1)],
+     main=c("Daily Oil Prices from Jan 2001—Feb 2021", "Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="grey")
 
 #Binned
-hist(daily_price_WTI[which(dailydata_ALL$rec_inds_use.USRECD == 0)], breaks=50)
-hist(daily_price_WTI[which(dailydata_ALL$rec_inds_use.USRECD == 1)], breaks=50)
+hist(daily_price_WTI[which(dailydata_ALL$rec_inds_use.USRECD == 0)], breaks=50,
+     main=c("Daily Oil Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="brown")
+hist(daily_price_WTI[which(dailydata_ALL$rec_inds_use.USRECD == 1)], breaks=50,
+     main=c("Daily Oil Prices from Jan 2001—Feb 2021", "Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="grey")
 
 #Types of recessions
-hist(daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 0)])
-hist(daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 1)])
-hist(daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 2)])
-hist(daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 3)])
+hist(daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 0)],
+     main=c("Daily Oil Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="brown")
+hist(daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 1)],
+     main=c("Daily Oil Prices Post-DotCom Bubble", "Recession: Apr 2001 — Nov 2001"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light grey")
+hist(daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 2)],
+     main=c("Daily Oil Prices: Great Recession", "Recession: Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="grey")
+hist(daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 3)],
+     main=c("Daily Oil Prices during COVID-19 Recession", "Recession: Mar 2020 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark grey")
 
 #Types of recessions; binned
-hist(daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 0)], breaks=50)
-hist(daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 1)], breaks=50)
-hist(daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 2)], breaks=50)
-hist(daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 3)], breaks=50)
+hist(daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 0)], breaks=50,
+     main=c("Daily Oil Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="brown")
+hist(daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 1)], breaks=50,
+     main=c("Daily Oil Prices Post-DotCom Bubble", "Recession: Apr 2001 — Nov 2001"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light grey")
+hist(daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 2)], breaks=50,
+     main=c("Daily Oil Prices: Great Recession", "Recession: Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="grey")
+hist(daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 3)], breaks=50,
+     main=c("Daily Oil Prices during COVID-19 Recession", "Recession: Mar 2020 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark grey")
 
 # None of these is normal, as demonstrated above. The 
 # prices during the different recessions also appear to follow different distributions.
@@ -1335,14 +1431,19 @@ sample_quantiles_wti <- (1:length_wti_noNA) / length_wti_noNA
 theoretical_quantiles_wti <- CDF(sort(as.numeric(wti_noNA)))
 
 # This QQ plot illustrates how well the theoretical distribution matches the empirical distribution.
-plot(theoretical_quantiles_wti, sample_quantiles_wti)
+plot(theoretical_quantiles_wti, sample_quantiles_wti,
+     main="QQ Plot for Pareto Distribution: Oil Prices",
+     xlab="Theoretical Quantiles",
+     ylab="Sample Quantiles")
 # It doesn't create a line; the Pareto distribution is not a good model
 
 # Rescale using log
 
 alpha = 1.25
 pdf = function(y) alpha*exp(y)^(-alpha-1)
-hist(log(as.numeric(wti_noNA)), prob=TRUE)
+hist(log(as.numeric(wti_noNA)), prob=TRUE,
+     main = "Log of Oil Prices: Does a Pareto Fit?",
+     xlab="Oil Prices", col="purple")
 curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
 
 # The curve does not fit the histogram.
@@ -1351,12 +1452,18 @@ curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
 wti_delt_noNA <- diff(as.numeric(wti_noNA))
 wti_sample_quantiles_delta <- (1:length(wti_delt_noNA)) / length(wti_delt_noNA)
 wti_delt_th_quant <- CDF(sort(wti_delt_noNA))
-plot(wti_delt_th_quant, wti_sample_quantiles_delta)
+plot(wti_delt_th_quant, wti_sample_quantiles_delta,
+     main="QQ Plot for Pareto Distribution: Changes in Oil Prices",
+     xlab="Theoretical Quantiles",
+     ylab="Sample Quantiles")
 # Definitely does not follow a line; no Pareto distribution is established.
 
 alpha = 1.25
 pdf = function(y) alpha*exp(y)^(-alpha-1)
-hist(log(wti_delt_noNA), prob=TRUE)
+hist(log(wti_delt_noNA), prob=TRUE,
+     main = "Log of Oil Prices: Does a Pareto Fit?",
+     xlab="Log of Changes in Oil Prices",
+     col = "purple")
 curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
 # Rescaled logarithmically, the Pareto distribution fits the upper end of oil's price changes much better
 # than it fits the prices themselves. It fits the upper end of the data
@@ -1368,7 +1475,10 @@ curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
 #Rescaled to using all data
 alpha = 1.25
 pdf = function(y) alpha*exp(y)^(-alpha-1)
-hist(wti_delt_noNA, prob=TRUE)
+hist(wti_delt_noNA, prob=TRUE,
+     main = "Oil Prices: Does a Pareto Fit?",
+     xlab="Changes in Oil Prices",
+     col = "purple")
 curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
 # Fits the data less well, missing the price changes > 0.
 
