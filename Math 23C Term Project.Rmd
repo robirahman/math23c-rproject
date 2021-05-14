@@ -267,7 +267,7 @@ for (i in 1:1000) {
   nonrecession_avg <- sum(unemps*not_indicator(unemployment_vs_recession[,2]))/202
   diffs[i] <- recession_avg - nonrecession_avg
 }
-mean(diffs)
+
 hist(diffs, col="lightblue", main="Shuffled differences in unemployment")
 abline(v=observed_difference, col="red")
 
@@ -277,8 +277,37 @@ pvalue <- sum(diffs > observed_difference)/1000
 ```
 
 
+```{r}
+set.seed(2022)
 
+recession_unemployment_rates <- unemployment_vs_recession$Unemployment[unemployment_vs_recession$recession_bool==1]
+nonrecession_unemployment_rates <- unemployment_vs_recession$Unemployment[unemployment_vs_recession$recession_bool==0]
 
+rur <- mean(recession_unemployment_rates)
+nur <- mean(nonrecession_unemployment_rates)
+rsd <- sd(recession_unemployment_rates)
+nsd <- sd(nonrecession_unemployment_rates)
+
+recession_samples <- sample(recession_unemployment_rates,size=16,replace=TRUE)
+nonrecession_samples <- sample(nonrecession_unemployment_rates,size=16,replace=TRUE)
+
+hist(recession_unemployment_rates, probability = TRUE, col="lightblue", main="Histogram of monthly unemployment rates during recessions")
+curve(dnorm(x,mean=rur,sd=rsd),add=TRUE, col="red")
+abline(v=rur, col="red")
+abline(v=rur-1.96*rsd/sqrt(16), col="red")
+abline(v=rur+1.96*rsd/sqrt(16), col="red")
+
+hist(nonrecession_unemployment_rates, probability = TRUE, col="lightblue", main="Histogram of monthly unemployment rates outside of recessions")
+curve(dnorm(x,mean=nur,sd=nsd),add=TRUE, col="red")
+abline(v=nur, col="red")
+abline(v=nur-1.96*nsd/sqrt(16), col="red")
+abline(v=nur+1.96*nsd/sqrt(16), col="red")
+
+t.test(recession_samples,nonrecession_samples,alternative="two.sided")
+```
+
+So the classical statistical two-sided t-test finds that the difference in means
+is not significant, when the bootstrap test indicates that there is a difference!
 
 
 
