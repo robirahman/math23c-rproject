@@ -47,9 +47,9 @@ Auxiliary questions we’ll be considering are
 2. Whether there were supply and demand shocks that affected the prices
 
 
-## Commodities, Recessions, and Unemployment - Robi
+## Hypothesis
 
-# Hypothesis
+Robi:
 
 Commodities tend to increase in price when the economy is growing. Recessions
 are periods with negative GDP growth, so commodity prices will decrease, or at
@@ -64,7 +64,7 @@ but a prosperous stock market. It will appear different than the other two reces
 such that you can distinguish it from the rest of the data set based on its upward
 trend in commodity prices.
 
-# Analysis
+## Analysis - Robi
 
 We obtained monthly time series data for nine commodities (crude oil, sugar,
 soybeans, wheat, beef, rubber, cocoa beans, gold, ice cream)^[https://www.indexmundi.com/commodities/], the US unemployment
@@ -693,36 +693,6 @@ qqline(daily_sug_price_change)
 # This seems to be a trait native to prices themselves, regardless of type of good.
 ```
 
-```{r echo=FALSE}
-chiSqTest <- function(x, nbins = 10) {
-    # Create standard normal bins based off quantiles of 10%
-    bins <- qnorm(1/nbins * (0:nbins), 0, 1);
-    
-    # Sort the observed values (from vector x) into the appropriate bins
-    bincode <- cut(x, bins, labels = FALSE);
-    
-    #Now get the frequency of values in the normal bins
-    observed <- table(bincode); 
-    
-    # Get the expected values from these bin sorts
-    # There should be the same number of values (observations)
-    expected <- length(x) / nbins;
-    
-    # Compute Chi-square statistic. 
-    chisq <- sum((observed - expected)^2 / expected);
-    
-    # p-value of Chi-square statistic
-    pval <- pchisq(chisq, df = nbins - 2, lower.tail = FALSE); 
-    
-    print("Chi-sq test statistic:")
-    print(paste(chisq))
-    
-    print("p-value with df = {nbins - 2}:")
-    print(paste(pval))
-}
-```
-
-
 # Testing Normality on Second Order Price Changes
 ```{r}
 daily_pval_sug_diff_diff<- chiSqTest(daily_sug_diff_diff)
@@ -841,7 +811,7 @@ price changes, were not unique to sugar. The prices for the other goods, includi
 safe-haven gold and inelastic oil, followed the same behavior. While there were differences
 in the variance of prices, price changes, and changes of the prices changes among
 different recessionary periods, the values always remained stubbornly tightly clustered
-around 0, with either long and thing or long and heavy tails indicating the 
+around 0, with either long and thin or long and heavy tails indicating the 
 presence of sometimes unusual circumstances. From these findings, it seems prices themselves, 
 regardless of type of good or recession, do not have a normal population distribution.
 
