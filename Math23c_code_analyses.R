@@ -760,6 +760,7 @@ pdf = function(y) alpha*exp(y)^(-alpha-1)
 hist(log(Gold_delt_noNA), prob=TRUE)
 curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
 # The Pareto distribution does not lie over the log(price changes of gold) histogram very well at all. 
+# The scale of price changes can't be attributed to only a small proportion of the price changes.
 
 
 
