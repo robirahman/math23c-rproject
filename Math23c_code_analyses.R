@@ -1578,6 +1578,403 @@ curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
 
 
 #*************************************************************
-#* Wheat prices
+# Wheat prices: Teucrium Wheat Fund prices from Yahoo Finance
 #*************************************************************
+
+#----------------------
+# Daily: Basic rundown
+#----------------------
+
+# Note: the values are strings, not numbers. So need to not include the 
+# missing values.
+daily_price_WEAT <- as.numeric(dailydata_ALL$priceWEAT[which(dailydata_ALL$priceWEAT != ".")])
+
+# Recession variables
+weat_no_rec <- daily_price_WEAT[which(dailydata_ALL$rec_inds_use.USRECD == 0)]
+weat_any_rec <- daily_price_WEAT[which(dailydata_ALL$rec_inds_use.USRECD == 1)]
+
+#Types of recessions variables
+weat_no_rec_type <- daily_price_WEAT[which(dailydata_ALL$rec_types_use.USRECD == 0)]
+weat_dotcom <- daily_price_WEAT[which(dailydata_ALL$rec_types_use.USRECD == 1)]
+weat_GreatRec <- daily_price_WEAT[which(dailydata_ALL$rec_types_use.USRECD == 2)]
+weat_COVID <- daily_price_WEAT[which(dailydata_ALL$rec_types_use.USRECD == 3)]
+
+#------------------------------------
+
+# Histogram of prices
+hist(daily_price_WEAT, breaks=50)
+# Possibly follows a gamma distribution, with greatest frequency between 5 and 10
+summary(daily_price_WEAT)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 4.92    7.54   11.22   12.37   15.28   26.31 
+var(daily_price_WEAT)
+#28.22823
+sd(daily_price_WEAT)
+#5.313025
+
+# Comparing prices during recessions
+summary(weat_no_rec)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 4.92    7.93   11.02   12.17   14.81   26.31
+hist(weat_no_rec)
+# Definitely not normal. Looks similar to wind speeds' distribution, but weatar
+# prices do not fit the usual use case for a Weibull distribution.
+var(weat_no_rec)
+# 24.92819
+sd(weat_no_rec)
+# 4.992814
+
+weat_any_rec <- dailydata_ALL$priceWEAT[which(dailydata_ALL$rec_inds_use.USRECD == 1 & dailydata_ALL$priceWEAT != ".")]
+# Cast the variable to ensure usage as numbers, not strings
+weat_any_rec <- as.numeric(weat_any_rec)
+summary(weat_any_rec)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 4.92    6.93   16.13   13.50   19.29   24.66
+hist(weat_any_rec)
+# Extremely bimodal. It appears to be 50/50 split in prices < $7 and prices >$14.
+var(weat_any_rec)
+# 44.49444
+sd(weat_any_rec)
+# 6.670416
+
+summary(weat_dotcom)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 18.37   19.80   21.73   21.62   23.35   24.66 
+hist(weat_dotcom)
+# A lot of fluctuation during the dotcom recession.
+# More evenly distributed prices than during no recession period.
+# Comparisons to other recessions below.
+var(weat_dotcom)
+# 3.594999
+sd(weat_dotcom)
+# 1.896048
+
+summary(weat_GreatRec)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 4.920   6.445   6.900   6.724   7.270   7.810 
+hist(weat_GreatRec)
+# long lower tail, negative skewness.
+var(weat_GreatRec)
+# 0.4793186
+sd(weat_GreatRec)
+#  0.6923284
+# The variance during the Great Recession is much lower than during
+# the dotcom recession.
+
+weat_COVID <- dailydata_ALL$priceWEAT[which(dailydata_ALL$rec_types_use.USRECD == 3 & dailydata_ALL$priceWEAT != ".")]
+weat_COVID <- as.numeric(weat_COVID)
+summary(weat_COVID)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 15.78   17.04   17.84   18.21   19.25   21.80
+hist(weat_COVID)
+# Heavier upper tail than during Great Recession; has a slight positive skewness.  
+var(weat_COVID)
+# 2.385077
+sd(weat_COVID)
+# 1.544369
+
+#Line graphs
+plot(daily_price_WEAT, type = 'l')
+# Upswings around recessionary periods. 
+plot(weat_no_rec, type = 'l')
+# No recession looks very similar to overall prices pattern
+plot(weat_any_rec, type= 'l')
+# Huge trough 
+plot(weat_dotcom, type = 'l')
+# downward trend; steep decline
+plot(weat_GreatRec, type='l')
+# Steep decline in the latter months before climbing back up.
+plot(weat_COVID, type='l')
+# During COVID recession months, there is a consistent downward trend, with no extreme declines.
+# All follow random walk non-patterns
+
+# Log comparisons to rescale
+hist(log(daily_price_WEAT))
+hist(log(weat_no_rec))
+#Very fat curves
+
+hist(log(weat_any_rec))
+# mean(log(weat_any_rec)) is 2.462173
+# Bimodal around the mean.
+hist(log(weat_dotcom))
+# Similarly, bimodal around the mean
+# mean(log(weat_dotcom)) = 3.069934 
+
+hist(log(weat_GreatRec))
+# Bimodal around the mean 
+# mean(log(weat_GreatRec)) = 1.899976
+hist(log(weat_COVID))
+# Not bimodal, unlike the others. A very fat curve with a small peak
+# mean(log(weat_COVID)) = 2.898559
+curve(dnorm(x, mean(log(weat_COVID)), sd = sqrt(var(log(weat_COVID)))), add=TRUE, col = "red")
+# Does not fit well; ot a normal distribution
+
+#Difference in log values over time
+hist(diff(log(daily_price_WEAT)))
+# Very small, nothing that stands out
+
+
+#-------------
+# Daily: price changes
+#
+#------------
+
+daily_weat_price_change <- diff(daily_price_WEAT)
+daily_weat_price_change_no_rec <- diff(weat_no_rec)
+daily_weat_price_change_rec <- diff(weat_any_rec)
+daily_weat_price_chng_dotcom <- diff(weat_dotcom)
+daily_weat_price_chng_GR <- diff(weat_GreatRec)
+daily_weat_price_chng_C19 <- diff(weat_COVID)
+
+#-------------------------------------
+
+hist(daily_weat_price_change)
+summary(daily_weat_price_change)
+# Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+# -2.219999 -0.090000  0.000000 -0.001721  0.070000 16.810001 
+var(daily_weat_price_change)
+# 0.1608409
+sd(daily_weat_price_change)
+# 0.4010498
+
+# difference in price changes
+daily_weat_diff_diff <- diff(diff(daily_price_WEAT))
+hist(daily_weat_diff_diff)
+# Very small differences in price changes themselves! Always clustered around 0
+summary(daily_weat_diff_diff)
+#     Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -16.350002  -0.140000   0.000000  -0.000074   0.130002  16.810001 
+var(daily_weat_diff_diff)
+# 0.3365551
+sd(daily_weat_diff_diff)
+# 0.5801336
+
+#****************
+
+hist(daily_weat_price_change_rec)
+summary(daily_weat_price_change_rec)
+#     Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -11.430001  -0.090000   0.000000  -0.008352   0.050000  15.960000
+
+# difference in price changes
+daily_weat_diff_diff_rec <- diff(daily_weat_price_change_rec)
+hist(daily_weat_diff_diff_rec)
+# Changes in price changes for weatar cluster around 0, but there
+# are long thin tails
+summary(daily_weat_diff_diff_rec)
+#     Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+#-16.050001  -0.130000   0.000000   0.000085   0.122500  16.030000   
+var(daily_weat_diff_diff_rec)
+# 1.128211
+sd(daily_weat_diff_diff_rec)
+# 1.062173
+
+#****************
+
+hist(daily_weat_price_chng_dotcom)
+# Long thin tails with a tight curve
+summary(daily_weat_price_chng_dotcom)
+#    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+# -2.22000 -0.18000  0.00000 -0.02448  0.10750  2.51000
+
+# difference in price changes
+daily_weat_diff_diff_dotcom <- diff(daily_weat_price_chng_dotcom)
+hist(daily_weat_diff_diff_dotcom)
+# During the dotcom crash, we see that the changes
+# in price changes have very long and thin tails; there is a little volatility.
+# However, most of the changes are still clustered around 0, and the variance is low.
+summary(daily_weat_diff_diff_dotcom)
+# Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+# -4.73000 -0.25000  0.00000  0.00185  0.23000  2.51000 
+var(daily_weat_diff_diff_dotcom)
+# 0.4446871
+sd(daily_weat_diff_diff_dotcom)
+# 0.6668486
+
+#****************
+hist(daily_weat_price_chng_GR)
+hist(daily_weat_price_chng_GR, breaks = 50)
+# A much more normal-looking distribution than compared to the others.
+curve(dnorm(x, mean(daily_weat_price_chng_GR), sd = sqrt(var(daily_weat_price_chng_GR))), add=TRUE, col = "red")
+# However, we see that the normal distribution for this mean and this standard deviation
+# does not well-match the histogram for daily weatar price changes during the Great Recession.
+
+summary(daily_weat_price_chng_GR)
+# Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+# -0.310000 -0.060000  0.000000 -0.003821  0.050000  0.380000  
+
+# difference in price changes
+daily_weat_diff_diff_GR <- diff(daily_weat_price_chng_GR)
+hist(daily_weat_diff_diff_GR)
+hist(daily_weat_diff_diff_GR, breaks = 100)
+curve(dnorm(x, mean(daily_weat_diff_diff_GR), sd = sqrt(var(daily_weat_diff_diff_GR))), add=TRUE, col = "red")
+# The curve is too tightly clustered around the mean 
+# for this to follow the normal distribution.
+summary(daily_weat_diff_diff_GR)
+#  Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -0.4200000 -0.0800000 -0.0100000 -0.0002571  0.0700000  0.4400000   
+var(daily_weat_diff_diff_GR)
+# 0.01612983
+sd(daily_weat_diff_diff_GR)
+# 0.1270033
+
+#****************
+
+hist(daily_weat_price_chng_C19)
+# The price changes remain clustered around the near-0 mean with a very long and thin
+# tail due to the extremes.
+summary(daily_weat_price_chng_C19)
+#     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+# -2.22000 -0.15000  0.00000 -0.02189  0.08500  2.51000  
+
+# difference in price changes
+daily_weat_diff_diff_C19 <- diff(daily_weat_price_chng_C19)
+hist(daily_weat_diff_diff_C19)
+# Continues to cluster around the near-0 mean for differences in price changes.
+# Continues to have very long and thin tails for the occasional outliers.
+summary(daily_weat_diff_diff_C19)
+#     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+# -4.73000 -0.20750 -0.00500  0.00062  0.20000  2.51000 
+var(daily_weat_diff_diff_C19)
+# 0.2405248
+sd(daily_weat_diff_diff_C19)
+# 0.4904333
+
+
+
+
+
+#***Chi-square tests on normal distribution
+
+# Differences in the price changes
+daily_pval_weat_diff_diff<- chiSqTest(daily_weat_diff_diff)
+# "Chi-sq test statistic:"
+# "9888.67053452539"
+# "p-value with df = {nbins - 2}:"
+# "0"
+# We definitely reject the null hypothesis that weatar's changes in price changes
+# follow a normal distribution.
+
+#QQ plots test of normality to see how distribution compares to normal distribution
+
+# Log Price Changes/percentage changes
+qqnorm(daily_weat_price_change)
+qqline(daily_weat_price_change) 
+# The data usually follow the normal distribution, but the outliers 
+# of price changes creates heavy tails. The distribution is therefore not
+# normal. This matches what we have seen with gold, considered a safe haven good, and
+# oil, a price-inelastic good. Sugar is traditionally not thought of as either of these
+# types of goods, and yet it similarly has non-normal price changes, with heavy tails.
+# This seems to be a trait native to prices themselves, regardless of type of good.
+
+
+# Changes in price changes
+qqnorm(daily_weat_diff_diff)
+qqline(daily_weat_diff_diff) 
+# For weatar, changes in price changes have "lighter" tails, unlike for oil.
+
+#****************************************
+#*Recap: Histograms and weatar prices' normality
+#****************************************
+
+# Comparing to relationship with recessions. 
+hist(daily_price_WEAT[which(dailydata_ALL$rec_inds_use.USRECD == 0)])
+hist(daily_price_WEAT[which(dailydata_ALL$rec_inds_use.USRECD == 1)])
+
+#Binned
+hist(daily_price_WEAT[which(dailydata_ALL$rec_inds_use.USRECD == 0)], breaks=50)
+hist(daily_price_WEAT[which(dailydata_ALL$rec_inds_use.USRECD == 1)], breaks=50)
+
+#Types of recessions
+hist(daily_price_WEAT[which(dailydata_ALL$rec_types_use.USRECD == 0)])
+hist(daily_price_WEAT[which(dailydata_ALL$rec_types_use.USRECD == 1)])
+hist(daily_price_WEAT[which(dailydata_ALL$rec_types_use.USRECD == 2)])
+hist(daily_price_WEAT[which(dailydata_ALL$rec_types_use.USRECD == 3)])
+
+#Types of recessions; binned
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 0)], breaks=50)
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 1)], breaks=50)
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 2)], breaks=50)
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 3)], breaks=50)
+
+# None of these is normal, as demonstrated above. The 
+# prices during the different recessions also appear to follow different distributions
+# with different skewness. The Great Recession is negatively skewed; COVID recession
+# is closer to normal with a wide variance; dotcom crash has a slight positive skewness.
+
+#-------------------------------------
+# Daily: Sugar: Pareto distribution 
+# Using code and notes from STai's PSet #5 R homework
+#-------------------------------------
+# Let's assess whether the distribution of weatar's prices
+# follows a Pareto distribution instead. A Pareto distribution
+# can more closely model stock prices. 
+
+# Given the density function: 
+paretopdf <- function(y) 4*y^(-5)
+
+# Distribution function from integrating pdf from 1 to y: 
+# 1 - (1/y^4).
+
+# Quantile 
+# q = 1 - (1/y^4)
+CDF <- function(y) 1 - (1/y^4)
+# y = 1 / (1-q)^(1/4)
+invCDF <- function(q) 1 / (1-q)^(1/4)
+
+# Generating 10000 uniform random numbers to be the quantiles
+quantiles <- runif(10000)
+pareto_draws <- invCDF(quantiles)
+
+hist(pareto_draws, prob=TRUE)
+curve(paretopdf, col="darkblue", lwd=3.2, add=TRUE)
+# Note that the curve of the pareto's density function matches the values that were
+# randomly drawn according to the distribution function's inverse.
+
+library(fitdistrplus)
+
+# Use a qq plot to see if the claims follow Pareto distribution with different parameters
+
+# The 1.25 creates a straight line between the theoretical quantiles and sample ones.
+CDF <- function(y) 1 - (1/y^1.25)
+
+#-----
+# generating quantiles for the number of data points in the sample 
+# e.g. if 100 data points, then [1/100, 2/100, 3/100, ..., 100/100]
+weat_noNA <- dailydata_ALL$priceWEAT[which(dailydata_ALL$priceWEAT != ".")]
+length_weat_noNA <- length(dailydata_ALL$priceWEAT[which(dailydata_ALL$priceWEAT != ".")])
+sample_quantiles_weat <- (1:length_weat_noNA) / length_weat_noNA
+
+# sorting the data set to compute each datapoint's theoretical quantile if it followed
+# the given distribution function. e.g. pareto with parameter of alpha.
+theoretical_quantiles_weat <- CDF(sort(as.numeric(weat_noNA)))
+
+# This QQ plot illustrates how well the theoretical distribution matches the empirical distribution.
+plot(theoretical_quantiles_weat, sample_quantiles_weat)
+# Sugar prices' Pareto theoretical vs. sample quantiles has more of a linear relationship than
+# the other goods prices' Pareto theoretical vs. sample quantils' relationship!
+
+# Rescale using log
+
+alpha = 1.25
+pdf = function(y) alpha*exp(y)^(-alpha-1)
+hist(log(as.numeric(weat_noNA)), prob=TRUE)
+curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
+# The curve does not fit the histogram.
+
+# Quick assessment of weatar's price changes
+weat_delt_noNA <- diff(as.numeric(weat_noNA))
+weat_sample_quantiles_delta <- (1:length(weat_delt_noNA)) / length(weat_delt_noNA)
+weat_delt_th_quant <- CDF(sort(weat_delt_noNA))
+plot(weat_delt_th_quant, weat_sample_quantiles_delta)
+# Definitely does not follow a line; no Pareto distribution is established.
+
+alpha = 1.25
+pdf = function(y) alpha*exp(y)^(-alpha-1)
+hist(log(weat_delt_noNA), prob=TRUE)
+curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
+# Rescaled logarithmically, the Pareto distribution fits the shape of the logs of weatar
+# price changes' histogram. However, the Pareto curve does not overlay the
+# histogram.
+
 
