@@ -1730,7 +1730,7 @@ hist(log(weat_COVID), main=c("Log of Daily Wheat Prices", "COVID-19 Recession", 
 # mean(log(weat_COVID)) = 3.071734
 
 #Difference in log values over time
-hist(diff(log(daily_price_WEAT)), main=c("Differences Between Daily Wheat Prices", "Jan 2008 — Jun 2009"), 
+hist(diff(log(daily_price_WEAT)), main=c("Differences Between Log of Daily Wheat Prices", "Jan 2008 — Jun 2009"), 
      xlab = "Prices in USD", ylab = "Frequency", col="orange")
 # Very small, very small differences, clustered around 0.
 
@@ -1749,46 +1749,52 @@ daily_weat_price_chng_C19 <- diff(weat_COVID)
 
 #-------------------------------------
 
-hist(daily_weat_price_change)
+hist(daily_weat_price_change, main=c("Differences Between Daily Wheat Prices", "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="orange")
 summary(daily_weat_price_change)
 # Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-# -2.219999 -0.090000  0.000000 -0.001721  0.070000 16.810001 
+# -1.230000 -0.090000 -0.010000 -0.001126  0.080000 17.210000 
 var(daily_weat_price_change)
-# 0.1608409
+# 0.162003
 sd(daily_weat_price_change)
-# 0.4010498
+# 0.402496
 
 # difference in price changes
 daily_weat_diff_diff <- diff(diff(daily_price_WEAT))
-hist(daily_weat_diff_diff)
+hist(daily_weat_diff_diff, main=c("Differences Between Changes in Daily Wheat Prices", "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark orange")
 # Very small differences in price changes themselves! Always clustered around 0
 summary(daily_weat_diff_diff)
-#     Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
-# -16.350002  -0.140000   0.000000  -0.000074   0.130002  16.810001 
+#      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -16.909999  -0.130000   0.000000  -0.000148   0.130000  17.170000 
 var(daily_weat_diff_diff)
-# 0.3365551
+#  0.3269708
 sd(daily_weat_diff_diff)
-# 0.5801336
+# 0.5718136
 
 #****************
 
-hist(daily_weat_price_change_rec)
+hist(daily_weat_price_change_rec, main=c("Changes in Daily Wheat Prices", "Recessionary Periods", 
+                                         "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="yellow")
 summary(daily_weat_price_change_rec)
-#     Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
-# -11.430001  -0.090000   0.000000  -0.008352   0.050000  15.960000
+#      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -18.240001  -0.090000   0.000000  -0.002594   0.090000  14.700000
 
 # difference in price changes
 daily_weat_diff_diff_rec <- diff(daily_weat_price_change_rec)
-hist(daily_weat_diff_diff_rec)
-# Changes in price changes for weatar cluster around 0, but there
+hist(daily_weat_diff_diff_rec, main=c("Differences in Changes of Daily Wheat Prices", "Recessionary Periods", 
+                                      "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light yellow")
+# Changes in price changes for cluster around 0, but there
 # are long thin tails
 summary(daily_weat_diff_diff_rec)
 #     Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
-#-16.050001  -0.130000   0.000000   0.000085   0.122500  16.030000   
+# -18.440002  -0.150000   0.000000  -0.001092   0.150000  18.240001    
 var(daily_weat_diff_diff_rec)
-# 1.128211
+# 1.521566
 sd(daily_weat_diff_diff_rec)
-# 1.062173
+# 1.233518
 
 #****************
 
