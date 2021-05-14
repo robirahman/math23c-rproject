@@ -1083,10 +1083,10 @@ hist(daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 2)])
 hist(daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 3)])
 
 #Types of recessions; binned
-hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 0)], breaks=50)
-hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 1)], breaks=50)
-hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 2)], breaks=50)
-hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 3)], breaks=50)
+hist(daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 0)], breaks=50)
+hist(daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 1)], breaks=50)
+hist(daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 2)], breaks=50)
+hist(daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 3)], breaks=50)
 
 # None of these is normal, as demonstrated above. The 
 # prices during the different recessions also appear to follow different distributions.
@@ -1491,10 +1491,10 @@ hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 2)])
 hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 3)])
 
 #Types of recessions; binned
-hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 0)], breaks=50)
-hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 1)], breaks=50)
-hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 2)], breaks=50)
-hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 3)], breaks=50)
+hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 0)], breaks=50)
+hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 1)], breaks=50)
+hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 2)], breaks=50)
+hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 3)], breaks=50)
 
 # None of these is normal, as demonstrated above. The 
 # prices during the different recessions also appear to follow different distributions
@@ -1923,39 +1923,63 @@ qqline(daily_weat_diff_diff)
 # lighter than they were for oil and sugar, however.
 
 #****************************************
-#*Recap: Histograms and weatar prices' normality
+#*Recap: Histograms and wheat prices' normality
 #****************************************
 
 # Comparing to relationship with recessions. 
-hist(daily_price_WEAT[which(dailydata_ALL$rec_inds_use.USRECD == 0)])
-hist(daily_price_WEAT[which(dailydata_ALL$rec_inds_use.USRECD == 1)])
+hist(daily_price_WEAT[which(dailydata_ALL$rec_inds_use.USRECD == 0)], 
+     main=c("Daily Wheat Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="yellow")
+hist(daily_price_WEAT[which(dailydata_ALL$rec_inds_use.USRECD == 1)],
+     main=c("Daily Wheat Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light yellow")
 
 #Binned
-hist(daily_price_WEAT[which(dailydata_ALL$rec_inds_use.USRECD == 0)], breaks=50)
-hist(daily_price_WEAT[which(dailydata_ALL$rec_inds_use.USRECD == 1)], breaks=50)
+hist(daily_price_WEAT[which(dailydata_ALL$rec_inds_use.USRECD == 0)], breaks=50,
+     main=c("Daily Wheat Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="yellow")
+hist(daily_price_WEAT[which(dailydata_ALL$rec_inds_use.USRECD == 1)], breaks=50,
+     main=c("Daily Wheat Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light yellow")
 
 #Types of recessions
-hist(daily_price_WEAT[which(dailydata_ALL$rec_types_use.USRECD == 0)])
-hist(daily_price_WEAT[which(dailydata_ALL$rec_types_use.USRECD == 1)])
-hist(daily_price_WEAT[which(dailydata_ALL$rec_types_use.USRECD == 2)])
-hist(daily_price_WEAT[which(dailydata_ALL$rec_types_use.USRECD == 3)])
+hist(daily_price_WEAT[which(dailydata_ALL$rec_types_use.USRECD == 0)],
+     main=c("Daily Wheat Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="yellow")
+hist(daily_price_WEAT[which(dailydata_ALL$rec_types_use.USRECD == 1)],
+     main=c("Daily Wheat Prices Post-DotCom Bubble", "Recession: Apr 2001 — Nov 2001"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="orange")
+hist(daily_price_WEAT[which(dailydata_ALL$rec_types_use.USRECD == 2)],
+     main=c("Daily Wheat Prices: Great Recession", "Recession: Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark orange")
+hist(daily_price_WEAT[which(dailydata_ALL$rec_types_use.USRECD == 3)],
+     main=c("Daily Wheat Prices during COVID-19 Recession", "Recession: Mar 2020 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light yellow")
 
 #Types of recessions; binned
-hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 0)], breaks=50)
-hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 1)], breaks=50)
-hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 2)], breaks=50)
-hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 3)], breaks=50)
+hist(daily_price_WEAT[which(dailydata_ALL$rec_types_use.USRECD == 0)], breaks=50,
+     main=c("Daily Wheat Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="yellow")
+hist(daily_price_WEAT[which(dailydata_ALL$rec_types_use.USRECD == 1)], breaks=50,
+     main=c("Daily Wheat Prices Post-DotCom Bubble", "Recession: Apr 2001 — Nov 2001"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="orange")
+hist(daily_price_WEAT[which(dailydata_ALL$rec_types_use.USRECD == 2)], breaks=50,
+     main=c("Daily Wheat Prices: Great Recession", "Recession: Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark orange")
+hist(daily_price_WEAT[which(dailydata_ALL$rec_types_use.USRECD == 3)], breaks=50,
+     main=c("Daily Wheat Prices during COVID-19 Recession", "Recession: Mar 2020 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light yellow")
 
 # None of these is normal, as demonstrated above. The 
 # prices during the different recessions also appear to follow different distributions
-# with different skewness. The Great Recession is negatively skewed; COVID recession
-# is closer to normal with a wide variance; dotcom crash has a slight positive skewness.
+# with different skewness. The Great Recession is a wide curve; COVID recession
+# is bimodal; dotcom crash is also bimodal, but more heavily weighed on lower half.
 
 #-------------------------------------
-# Daily: Sugar: Pareto distribution 
+# Daily: Wheat: Pareto distribution 
 # Using code and notes from STai's PSet #5 R homework
 #-------------------------------------
-# Let's assess whether the distribution of weatar's prices
+# Let's assess whether the distribution of wheat's prices
 # follows a Pareto distribution instead. A Pareto distribution
 # can more closely model stock prices. 
 
@@ -1999,30 +2023,41 @@ sample_quantiles_weat <- (1:length_weat_noNA) / length_weat_noNA
 theoretical_quantiles_weat <- CDF(sort(as.numeric(weat_noNA)))
 
 # This QQ plot illustrates how well the theoretical distribution matches the empirical distribution.
-plot(theoretical_quantiles_weat, sample_quantiles_weat)
-# Sugar prices' Pareto theoretical vs. sample quantiles has more of a linear relationship than
-# the other goods prices' Pareto theoretical vs. sample quantils' relationship!
+plot(theoretical_quantiles_weat, sample_quantiles_weat, 
+     main="QQ Plot for Pareto Distribution: Wheat Prices",
+     xlab="Theoretical Quantiles",
+     ylab="Sample Quantiles")
+# Wheat prices' Pareto theoretical vs. sample quantiles has more of a linear relationship than
+# the other goods prices' Pareto theoretical vs. sample quantiles' relationship!
 
 # Rescale using log
 
 alpha = 1.25
 pdf = function(y) alpha*exp(y)^(-alpha-1)
-hist(log(as.numeric(weat_noNA)), prob=TRUE)
+hist(log(as.numeric(weat_noNA)), prob=TRUE, 
+     main = "Log of Wheat Prices: Does a Pareto Fit?",
+     xlab="Wheat Prices", col="purple")
 curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
 # The curve does not fit the histogram.
 
-# Quick assessment of weatar's price changes
+# Assessment of wheat's price changes: Does a Pareto fit?
 weat_delt_noNA <- diff(as.numeric(weat_noNA))
 weat_sample_quantiles_delta <- (1:length(weat_delt_noNA)) / length(weat_delt_noNA)
 weat_delt_th_quant <- CDF(sort(weat_delt_noNA))
-plot(weat_delt_th_quant, weat_sample_quantiles_delta)
+plot(weat_delt_th_quant, weat_sample_quantiles_delta,
+     main="QQ Plot for Pareto Distribution: Changes in Wheat Prices",
+     xlab="Theoretical Quantiles",
+     ylab="Sample Quantiles")
 # Definitely does not follow a line; no Pareto distribution is established.
 
 alpha = 1.25
 pdf = function(y) alpha*exp(y)^(-alpha-1)
-hist(log(weat_delt_noNA), prob=TRUE)
+hist(log(weat_delt_noNA), prob=TRUE,
+     main = "Log of Wheat Prices: Does a Pareto Fit?",
+     xlab="Log of Changes in Wheat Prices",
+     col = "purple")
 curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
-# Rescaled logarithmically, the Pareto distribution fits the shape of the logs of weatar
+# Rescaled logarithmically, the Pareto distribution fits the shape of the logs of wheat's
 # price changes' histogram. However, the Pareto curve does not overlay the
 # histogram.
 
