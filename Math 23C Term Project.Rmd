@@ -66,7 +66,40 @@ trend in commodity prices.
 
 ## Analysis - Robi
 
+We obtained monthly time series data for nine commodities (crude oil, sugar,
+soybeans, wheat, beef, rubber, cocoa beans, gold, ice cream)^[https://www.indexmundi.com/commodities/], the US unemployment
+rate^[https://beta.bls.gov/dataViewer/view/timeseries/LNS14000000], the US dollar to Euro exchange rate^[https://fred.stlouisfed.org/series/DEXUSEU],
+and an indicator of past US economic recession dates^[https://fred.stlouisfed.org/series/JHDUSRGDPBR].
+The data were cleaned, then merged into a dataframe with one observation of each
+piece of information for every month from February 2001 to February 2021, giving
+twenty years of historical data going back from this course's spring semester. This
+interval includes the 2020-21 coronavirus pandemic, the 2007-2009 financial crisis,
+and the early-2000s dotcom stock crash. The three recessions were assigned a
+categorical/factor variable in a new column of the dataframe.
 
+To test the hypothesis that commodities had better performance (in the sense
+of prices increasing over time) during during non-recession periods than during
+recessions, a new dataframe was created by dividing each commodity's price in
+each month by its price in the previous month to obtain a table of percentage
+changes. Histograms were created for each good individually and for all goods
+together, showing the distribution of changes in price for the whole period,
+recessions only, and growth periods only. The histograms were extremely similar
+across these different categories, somewhat contravening the hypothesis that
+prices would go up during non-recession periods and down during recessions.
+
+Next, logistic regression was used in an attempt to differentiate between
+recession and non-recession periods. If price changes in goods are distributed
+differently between these two types of periods, it should be possible to construct
+a logistic function of a month's price changes whose output is the probability
+that a month was during a recession, and which is highly correlated with the
+historical recession indicator. This turned out not to be the case. Logistic models
+of some of the variables individually, all of the variables together, and some
+combinations of variables were all completely ineffective at predicting past
+recessions. Not only did the models exhibit almost no change in their values
+of recession probability over the range of observed price increases, the predictions
+created by deploying these models on the training dataset performed far worse
+(around 55%) than the no-information accuracy rate, a strategy of simply guessing
+that every month is not a recession (which is true around 85% of the time).
 
 ```{r}
 

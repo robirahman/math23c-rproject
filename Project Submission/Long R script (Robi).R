@@ -48,14 +48,20 @@ for (i in 2:11) {
 
 
 
+# Logistic modeling to estimate probability of a recession in a given month,
+# based on the changes in commodity prices during that month:
 soybeans_regression <- glm(recession_bool ~ Soybeans, data = price_changes, family = 'binomial')
 summary(soybeans_regression)
-plot(price_changes$Soybeans, price_changes$recession_bool)
+plot(price_changes$Soybeans, price_changes$recession_bool,
+     xlab="Monthly price change of soybeans", ylab="Recession indicator",
+     main="Soybean price changes in non-recession and recession periods")
 
 
 gold_regression <- glm(recession_bool ~ Gold, data = price_changes, family = 'binomial')
 summary(gold_regression)
-plot(price_changes$Gold, price_changes$recession_bool)
+plot(price_changes$Gold, price_changes$recession_bool,
+     xlab="Monthly price change of gold", ylab="Recession indicator",
+     main="Gold price changes in non-recession and recession periods")
 
 
 goods_vs_recession_logistic_model <- glm(
@@ -73,7 +79,9 @@ inv.logit(-1.6582-0.2640-0.7643-0.8586-1.5616)
 icecream_regression <- glm(recession_bool ~ Ice_cream, data = price_changes, family = 'binomial')
 summary(icecream_regression)
 
-plot(price_changes$Ice_cream, price_changes$recession_bool)
+plot(price_changes$Ice_cream, price_changes$recession_bool,
+     xlab="Monthly price change of ice cream", ylab="Recession indicator",
+     main="Ice cream price changes in non-recession and recession periods")
 curve(inv.logit(-1.5900*x-1.6687), add=TRUE)
 
 
@@ -164,7 +172,14 @@ ggplot(data = df, aes(x, y, group = price)) +
 
 
 # Make a graphical display to see if any commodities are correlated to each other.
-pairs.panels(price_changes[,2:13])
+pairs.panels(price_changes[,c(2:9,11)])
+
+# Looks like nothing is correlated to anything else except for R=0.45 between
+# soybeans and wheat. Maybe we can compare some commodities to the recession
+# indicator, the Euro exchange rate, and unemployment.
+pairs.panels(price_changes[,8:13])
+# There aren't really any correlations between these, looks like they're all
+# orthogonal! I tried this with the entire dataframe too, with the same results.
 
 
 
