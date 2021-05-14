@@ -693,6 +693,9 @@ hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 3)], breaks=50
 # Daily: Gold: Pareto distribution 
 # Using code and notes from STai's PSet #5 R homework
 #-------------------------------------
+# Let's assess whether the distribution of gold's prices
+# follows a Pareto distribution instead. A Pareto distribution
+# can more closely model stock prices. 
 
 # Given the density function: 
 paretopdf <- function(y) 4*y^(-5)
@@ -757,3 +760,9 @@ pdf = function(y) alpha*exp(y)^(-alpha-1)
 hist(log(Gold_delt_noNA), prob=TRUE)
 curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
 # The Pareto distribution does not lie over the log(price changes of gold) histogram very well at all. 
+
+
+
+#*************************************************************
+#* Crude oil
+#*************************************************************
