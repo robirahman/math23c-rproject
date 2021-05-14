@@ -26,8 +26,8 @@ price_changes <- price_changes[c(-1),]
 
 # Display a histogram of the price changes
 for (i in 2:11) {
-  name <- goods[i]
-  hist(price_changes[,i], main=name)
+  name <- paste(goods[i],"(all months)")
+  hist(price_changes[,i], main=name, col="lightblue")
 }
 
 # Repeating that, but during recessions only
@@ -35,7 +35,7 @@ for (i in 2:11) {
   name <- paste(goods[i],"(recession)")
   values <- price_changes[,c(i,13)]
   values <- values[values[,2] == 1,]
-  hist(values[,1], main=name)
+  hist(values[,1], main=name, col="lightblue")
 }
 
 # Repeat for months not in recession
@@ -43,7 +43,7 @@ for (i in 2:11) {
   name <- paste(goods[i],"(non-recession)")
   values <- price_changes[,c(i,13)]
   values <- values[values[,2] == 0,]
-  hist(values[,1], main=name)
+  hist(values[,1], main=name, col="lightblue")
 }
 
 
@@ -98,7 +98,7 @@ for (c in 2:11) {
   }
 }
 
-hist(change_vs_recession$change)
+hist(change_vs_recession$change, col="lightblue", main="Frequency of price changes (all goods, 2001-21)")
 table(change_vs_recession$change >= 0, change_vs_recession$recession_bool)
 
 # During recessions: price diff >= 0 212 times; price diff < 0 168 times
@@ -119,7 +119,6 @@ for (c in 2:11) {
   }
 }
 
-hist(change_vs_recession$change)
 table(change_vs_recession$change >= 0, change_vs_recession$which_recession)
 
 1130/(890+1130) # Prices increased 55.9% of the time outside of recessions
@@ -140,7 +139,8 @@ df <- tibble::tribble(
 )
 ggplot(data = df, aes(x, y, group = price)) +
   geom_col(aes(fill = price), position = position_stack(reverse = TRUE)) +
-  geom_hline(yintercept = 0)
+  geom_hline(yintercept = 0) +
+  xlab("") + ylab("") + ggtitle("Likelihood of price increases vs recession")
 
 df <- tibble::tribble(
   ~x, ~y, ~price,
@@ -157,7 +157,8 @@ df <- tibble::tribble(
 )
 ggplot(data = df, aes(x, y, group = price)) +
   geom_col(aes(fill = price), position = position_stack(reverse = TRUE)) +
-  geom_hline(yintercept = 0)
+  geom_hline(yintercept = 0) +
+  xlab("") + ylab("") + ggtitle("Likelihood of price increases vs recession")
 
 
 
@@ -232,4 +233,6 @@ abline(v=nur+1.96*nsd/sqrt(16), col="red")
 t.test(recession_samples,nonrecession_samples,alternative="two.sided")
 # So the classical statistical two-sided t-test finds that the difference in means
 # is not significant, when the bootstrap test indicates that there is a difference!
+# However, the classical test may be inaccurate because it relies on the assumptions
+# that both categories are normally distributed, and have the same variance
 
