@@ -47,9 +47,9 @@ Auxiliary questions we’ll be considering are
 2. Whether there were supply and demand shocks that affected the prices
 
 
-## Commodities, Recessions, and Unemployment - Robi
+# Commodities, Recessions, and Unemployment - Robi
 
-# Hypothesis
+## Hypothesis
 
 Commodities tend to increase in price when the economy is growing. Recessions
 are periods with negative GDP growth, so commodity prices will decrease, or at
@@ -64,7 +64,7 @@ but a prosperous stock market. It will appear different than the other two reces
 such that you can distinguish it from the rest of the data set based on its upward
 trend in commodity prices.
 
-# Analysis
+## Analysis
 
 We obtained monthly time series data for nine commodities (crude oil, sugar,
 soybeans, wheat, beef, rubber, cocoa beans, gold, ice cream)^[https://www.indexmundi.com/commodities/], the US unemployment
