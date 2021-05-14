@@ -238,6 +238,43 @@ pairs.panels(price_changes[,2:13])
 ```
 
 
+## Permutation test
+
+This bootstrap test determines the difference between unemployment during recessions
+and periods of economic growth using a simulation technique.
+
+```{r}
+set.seed(2021)
+
+unemployment_vs_recession <- price_changes[,12:13]
+
+total_recession <- sum(unemployment_vs_recession[,2]) # 38
+total_nonrecession <- 240-total_recession # 202
+
+indicator <- function(x) x == 1
+not_indicator <- function(x) x == 0
+
+avg_unemp_in_recession <- sum(unemployment_vs_recession[,1]*indicator(unemployment_vs_recession[,2]))/38
+avg_unemp_not_recession <- sum(unemployment_vs_recession[,1]*not_indicator(unemployment_vs_recession[,2]))/202
+
+observed_difference <- avg_unemp_in_recession - avg_unemp_not_recession
+
+
+diffs <- numeric(1000)
+for (i in 1:1000) {
+  unemps <- sample(unemployment_vs_recession[,1])
+  recession_avg <- sum(unemps*indicator(unemployment_vs_recession[,2]))/38
+  nonrecession_avg <- sum(unemps*not_indicator(unemployment_vs_recession[,2]))/202
+  diffs[i] <- recession_avg - nonrecession_avg
+}
+mean(diffs)
+hist(diffs, col="lightblue", main="Shuffled differences in unemployment")
+abline(v=observed_difference, col="red")
+
+pvalue <- sum(diffs > observed_difference)/1000
+# p-value = 0.004, so there is a significant difference in unemployment during
+#                  recessions and non-recession periods!
+```
 
 
 
