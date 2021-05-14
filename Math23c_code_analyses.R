@@ -1507,7 +1507,9 @@ sug_COVID <- daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 3)]
 #------------------------------------
 
 # Histogram of prices
-hist(daily_price_SUG, breaks=50)
+hist(daily_price_SUG, breaks=50,
+     main="Daily Sugar Prices from Jan 2001—Feb 2021", 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
 # Possibly follows a gamma distribution, with greatest frequency between 5 and 10
 summary(daily_price_SUG)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
@@ -1521,7 +1523,9 @@ sd(daily_price_SUG)
 summary(sug_no_rec)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 4.92    7.93   11.02   12.17   14.81   26.31
-hist(sug_no_rec)
+hist(sug_no_rec,
+     main=c("Daily Sugar Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
 # Definitely not normal. Looks similar to wind speeds' distribution, but sugar
 # prices do not fit the usual use case for a Weibull distribution.
 var(sug_no_rec)
@@ -1535,7 +1539,9 @@ sug_any_rec <- as.numeric(sug_any_rec)
 summary(sug_any_rec)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 4.92    6.93   16.13   13.50   19.29   24.66
-hist(sug_any_rec)
+hist(sug_any_rec,
+     main=c("Daily Sugar Prices from Jan 2001—Feb 2021", "Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="pink")
 # Extremely bimodal. It appears to be 50/50 split in prices < $7 and prices >$14.
 var(sug_any_rec)
 # 44.49444
@@ -1545,7 +1551,9 @@ sd(sug_any_rec)
 summary(sug_dotcom)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 18.37   19.80   21.73   21.62   23.35   24.66 
-hist(sug_dotcom)
+hist(sug_dotcom,
+     main=c("Daily Sugar Prices Post-DotCom Bubble", "Recession: Apr 2001 — Nov 2001"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
 # A lot of fluctuation during the dotcom recession.
 # More evenly distributed prices than during no recession period.
 # Comparisons to other recessions below.
@@ -1557,7 +1565,9 @@ sd(sug_dotcom)
 summary(sug_GreatRec)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 4.920   6.445   6.900   6.724   7.270   7.810 
-hist(sug_GreatRec)
+hist(sug_GreatRec,
+     main=c("Daily Sugar Prices: Great Recession", "Recession: Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light pink")
 # long lower tail, negative skewness.
 var(sug_GreatRec)
 # 0.4793186
@@ -1571,52 +1581,81 @@ sug_COVID <- as.numeric(sug_COVID)
 summary(sug_COVID)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 15.78   17.04   17.84   18.21   19.25   21.80
-hist(sug_COVID)
+hist(sug_COVID,
+     main=c("Daily Sugar Prices during COVID-19 Recession", "Recession: Mar 2020 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="pink")
 # Heavier upper tail than during Great Recession; has a slight positive skewness.  
 var(sug_COVID)
 # 2.385077
 sd(sug_COVID)
 # 1.544369
 
-#Line graphs
-plot(daily_price_SUG, type = 'l')
+#Line graphs as overview
+plot(daily_price_SUG, type = 'l',
+     main=c("Daily Sugar Prices", "Jan 2001 — Feb 2021"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
 # Upswings around recessionary periods. 
-plot(sug_no_rec, type = 'l')
+plot(sug_no_rec, type = 'l',
+     main=c("Daily Sugar Prices","Non-Recessionary Periods", "Jan 2001 — Feb 2021"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
 # No recession looks very similar to overall prices pattern
-plot(sug_any_rec, type= 'l')
+plot(sug_any_rec, type= 'l',
+     main=c("Daily Sugar Prices","Recessionary Periods", "Jan 2001 — Feb 2021"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
 # Huge trough 
-plot(sug_dotcom, type = 'l')
+plot(sug_dotcom, type = 'l',
+     main=c("Daily Sugar Prices","DotCom Crash", "Apr 2001 — Nov 2001"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
 # downward trend; steep decline
-plot(sug_GreatRec, type='l')
+plot(sug_GreatRec, type='l',
+     main=c("Daily Sugar Prices","Great Recession", "Jan 2008 — Jun 2009"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
 # Steep decline in the latter months before climbing back up.
-plot(sug_COVID, type='l')
+plot(sug_COVID, type='l',
+     main=c("Daily Sugar Prices","COVID-19 Recession", "Mar 2020 — Feb 2021"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
 # During COVID recession months, there is a consistent downward trend, with no extreme declines.
 # All follow random walk non-patterns
 
 # Log comparisons to rescale
-hist(log(daily_price_SUG))
-hist(log(sug_no_rec))
+hist(log(daily_price_SUG),
+     main=c("Log of Daily Sugar Prices", "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
+hist(log(sug_no_rec),
+     main=c("Log of Daily Sugar Prices","Non-Recessionary", "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
 #Very fat curves
 
-hist(log(sug_any_rec))
+hist(log(sug_any_rec),
+     main=c("Log of Daily Sugar Prices","Recessionary", "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
 # mean(log(sug_any_rec)) is 2.462173
 # Bimodal around the mean.
-hist(log(sug_dotcom))
+hist(log(sug_dotcom),
+     main=c("Log of Daily Sugar Prices","DotCom Crash", "Apr 2001 — Nov 2001"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
 # Similarly, bimodal around the mean
 # mean(log(sug_dotcom)) = 3.069934 
 
-hist(log(sug_GreatRec))
-# Bimodal around the mean 
+hist(log(sug_GreatRec),
+     main=c("Log of Daily Sugar Prices", "Great Recession", "Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="pink")
+# Bimodal around the mean; heavier upper half 
 # mean(log(sug_GreatRec)) = 1.899976
-hist(log(sug_COVID))
+hist(log(sug_COVID),breaks=50,
+     main=c("Log of Daily Sugar Prices", "COVID-19 Recession", "Mar 2020 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="red")
 # Not bimodal, unlike the others. A very fat curve with a small peak
 # mean(log(sug_COVID)) = 2.898559
-curve(dnorm(x, mean(log(sug_COVID)), sd = sqrt(var(log(sug_COVID)))), add=TRUE, col = "red")
-# Does not fit well; ot a normal distribution
+curve(dnorm(x, mean(log(sug_COVID)), sd = sqrt(var(log(sug_COVID)))), add=TRUE, col = "blue")
+# Normal curve for this 
+# std and mean does not fit well; not a normal distribution
 
 #Difference in log values over time
-hist(diff(log(daily_price_SUG)))
-# Very small, nothing that stands out
+hist(diff(log(daily_price_SUG)),
+     main=c("Differences Between Log of Daily Sugar Prices", "Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
+# Differences in log prices are very stable around 0
 
 
 #-------------
@@ -1633,7 +1672,10 @@ daily_sug_price_chng_C19 <- diff(sug_COVID)
 
 #-------------------------------------
 
-hist(daily_sug_price_change)
+hist(daily_sug_price_change,
+     main=c("Differences Between Daily Sugar Prices", "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
+# Very stable price changes, stable around 0
 summary(daily_sug_price_change)
 # Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
 # -2.219999 -0.090000  0.000000 -0.001721  0.070000 16.810001 
@@ -1644,7 +1686,9 @@ sd(daily_sug_price_change)
 
 # difference in price changes
 daily_sug_diff_diff <- diff(diff(daily_price_SUG))
-hist(daily_sug_diff_diff)
+hist(daily_sug_diff_diff,
+     main=c("Differences Between Changes in Daily Sugar Prices", "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="pink")
 # Very small differences in price changes themselves! Always clustered around 0
 summary(daily_sug_diff_diff)
 #     Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
@@ -1663,7 +1707,10 @@ summary(daily_sug_price_change_rec)
 
 # difference in price changes
 daily_sug_diff_diff_rec <- diff(daily_sug_price_change_rec)
-hist(daily_sug_diff_diff_rec)
+hist(daily_sug_diff_diff_rec,
+     main=c("Changes in Daily Sugar Prices", "Recessionary Periods", 
+            "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
 # Changes in price changes for sugar cluster around 0, but there
 # are long thin tails
 summary(daily_sug_diff_diff_rec)
@@ -1684,7 +1731,10 @@ summary(daily_sug_price_chng_dotcom)
 
 # difference in price changes
 daily_sug_diff_diff_dotcom <- diff(daily_sug_price_chng_dotcom)
-hist(daily_sug_diff_diff_dotcom)
+hist(daily_sug_diff_diff_dotcom,
+     main=c("Changes in Daily Sugar Prices", 
+            "DotCom Crash", "Apr 2001 — Nov 2001"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="pink")
 # During the dotcom crash, we see that the changes
 # in price changes have very long and thin tails; there is a little volatility.
 # However, most of the changes are still clustered around 0, and the variance is low.
@@ -1710,9 +1760,16 @@ summary(daily_sug_price_chng_GR)
 
 # difference in price changes
 daily_sug_diff_diff_GR <- diff(daily_sug_price_chng_GR)
-hist(daily_sug_diff_diff_GR)
-hist(daily_sug_diff_diff_GR, breaks = 100)
-curve(dnorm(x, mean(daily_sug_diff_diff_GR), sd = sqrt(var(daily_sug_diff_diff_GR))), add=TRUE, col = "red")
+hist(daily_sug_diff_diff_GR,
+     main=c("Changes in Daily Sugar Prices", 
+            "Great Recession", "Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
+hist(daily_sug_diff_diff_GR, breaks = 100, 
+     main=c("Changes in Daily Sugar Prices", 
+            "Great Recession", "Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
+curve(dnorm(x, mean(daily_sug_diff_diff_GR), sd = sqrt(var(daily_sug_diff_diff_GR))), 
+      add=TRUE, col = "dark blue")
 # The curve is too tightly clustered around the mean 
 # for this to follow the normal distribution.
 summary(daily_sug_diff_diff_GR)
@@ -1725,7 +1782,11 @@ sd(daily_sug_diff_diff_GR)
 
 #****************
 
-hist(daily_sug_price_chng_C19)
+hist(daily_sug_price_chng_C19,
+     main=c("Changes in Daily Sugar Prices",
+            "COVID-19 Recession", 
+            "Mar 2020 — Feb 2021"), 
+     xlab="Price Changes in USD", ylab = "Frequency", col="red")
 # The price changes remain clustered around the near-0 mean with a very long and thin
 # tail due to the extremes.
 summary(daily_sug_price_chng_C19)
@@ -1734,7 +1795,11 @@ summary(daily_sug_price_chng_C19)
 
 # difference in price changes
 daily_sug_diff_diff_C19 <- diff(daily_sug_price_chng_C19)
-hist(daily_sug_diff_diff_C19)
+hist(daily_sug_diff_diff_C19,
+     main=c("Differences in Changes in Daily Sugar Prices",
+            "COVID-19 Recession", 
+            "Mar 2020 — Feb 2021"), 
+     xlab="Changes in USD", ylab = "Frequency", col="pink")
 # Continues to cluster around the near-0 mean for differences in price changes.
 # Continues to have very long and thin tails for the occasional outliers.
 summary(daily_sug_diff_diff_C19)
@@ -1763,7 +1828,8 @@ daily_pval_sug_diff_diff<- chiSqTest(daily_sug_diff_diff)
 #QQ plots test of normality to see how distribution compares to normal distribution
 
 # Log Price Changes/percentage changes
-qqnorm(daily_sug_price_change)
+qqnorm(daily_sug_price_change,
+       main="Normal Q-Q Plot for Price Changes in Sugar")
 qqline(daily_sug_price_change) 
 # The data usually follow the normal distribution, but the outliers 
 # of price changes creates heavy tails. The distribution is therefore not
@@ -1774,7 +1840,8 @@ qqline(daily_sug_price_change)
 
 
 # Changes in price changes
-qqnorm(daily_sug_diff_diff)
+qqnorm(daily_sug_diff_diff,
+       main=c("Normal Q-Q Plot", "Differences of Price Changes in Sugar"))
 qqline(daily_sug_diff_diff) 
 # For sugar, changes in price changes have "lighter" tails, unlike for oil.
 
@@ -1783,24 +1850,48 @@ qqline(daily_sug_diff_diff)
 #****************************************
 
 # Comparing to relationship with recessions. 
-hist(daily_price_SUG[which(dailydata_ALL$rec_inds_use.USRECD == 0)])
-hist(daily_price_SUG[which(dailydata_ALL$rec_inds_use.USRECD == 1)])
+hist(daily_price_SUG[which(dailydata_ALL$rec_inds_use.USRECD == 0)],
+     main=c("Daily Sugar Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
+hist(daily_price_SUG[which(dailydata_ALL$rec_inds_use.USRECD == 1)],
+     main=c("Daily Sugar Prices from Jan 2001—Feb 2021", "Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="red")
 
 #Binned
-hist(daily_price_SUG[which(dailydata_ALL$rec_inds_use.USRECD == 0)], breaks=50)
-hist(daily_price_SUG[which(dailydata_ALL$rec_inds_use.USRECD == 1)], breaks=50)
+hist(daily_price_SUG[which(dailydata_ALL$rec_inds_use.USRECD == 0)], breaks=50,
+     main=c("Daily Sugar Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
+hist(daily_price_SUG[which(dailydata_ALL$rec_inds_use.USRECD == 1)], breaks=50,
+     main=c("Daily Sugar Prices from Jan 2001—Feb 2021", "Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="red")
 
 #Types of recessions
-hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 0)])
-hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 1)])
-hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 2)])
-hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 3)])
+hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 0)],
+     main=c("Daily Sugar Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
+hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 1)],
+     main=c("Daily Sugar Prices Post-DotCom Bubble", "Recession: Apr 2001 — Nov 2001"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="pink")
+hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 2)],
+     main=c("Daily Sugar Prices: Great Recession", "Recession: Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="red")
+hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 3)],
+     main=c("Daily Sugar Prices during COVID-19 Recession", "Recession: Mar 2020 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark red")
 
 #Types of recessions; binned
-hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 0)], breaks=50)
-hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 1)], breaks=50)
-hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 2)], breaks=50)
-hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 3)], breaks=50)
+hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 0)], breaks=50,
+     main=c("Daily Sugar Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
+hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 1)], breaks=50,
+     main=c("Daily Sugar Prices Post-DotCom Bubble", "Recession: Apr 2001 — Nov 2001"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="pink")
+hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 2)], breaks=50,
+     main=c("Daily Sugar Prices: Great Recession", "Recession: Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="red")
+hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 3)], breaks=50,
+     main=c("Daily Sugar Prices during COVID-19 Recession", "Recession: Mar 2020 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark red")
 
 # None of these is normal, as demonstrated above. The 
 # prices during the different recessions also appear to follow different distributions
@@ -1831,7 +1922,8 @@ invCDF <- function(q) 1 / (1-q)^(1/4)
 quantiles <- runif(10000)
 pareto_draws <- invCDF(quantiles)
 
-hist(pareto_draws, prob=TRUE)
+hist(pareto_draws, prob=TRUE,
+     main="Pareto Draws")
 curve(paretopdf, col="darkblue", lwd=3.2, add=TRUE)
 # Note that the curve of the pareto's density function matches the values that were
 # randomly drawn according to the distribution function's inverse.
@@ -1855,7 +1947,10 @@ sample_quantiles_sug <- (1:length_sug_noNA) / length_sug_noNA
 theoretical_quantiles_sug <- CDF(sort(as.numeric(sug_noNA)))
 
 # This QQ plot illustrates how well the theoretical distribution matches the empirical distribution.
-plot(theoretical_quantiles_sug, sample_quantiles_sug)
+plot(theoretical_quantiles_sug, sample_quantiles_sug,
+     main="QQ Plot for Pareto Distribution: Sugar Prices",
+     xlab="Theoretical Quantiles",
+     ylab="Sample Quantiles")
 # Sugar prices' Pareto theoretical vs. sample quantiles has more of a linear relationship than
 # the other goods prices' Pareto theoretical vs. sample quantils' relationship!
 
@@ -1863,7 +1958,9 @@ plot(theoretical_quantiles_sug, sample_quantiles_sug)
 
 alpha = 1.25
 pdf = function(y) alpha*exp(y)^(-alpha-1)
-hist(log(as.numeric(sug_noNA)), prob=TRUE)
+hist(log(as.numeric(sug_noNA)), prob=TRUE,
+     main = "Log of Sugar Prices: Does a Pareto Fit?",
+     xlab="Sugar Prices", col="purple")
 curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
 # The curve does not fit the histogram.
 
@@ -1871,12 +1968,18 @@ curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
 sug_delt_noNA <- diff(as.numeric(sug_noNA))
 sug_sample_quantiles_delta <- (1:length(sug_delt_noNA)) / length(sug_delt_noNA)
 sug_delt_th_quant <- CDF(sort(sug_delt_noNA))
-plot(sug_delt_th_quant, sug_sample_quantiles_delta)
+plot(sug_delt_th_quant, sug_sample_quantiles_delta,
+     main=c("QQ Plot for Pareto Distribution:", "Changes in Sugar Prices"),
+     xlab="Theoretical Quantiles",
+     ylab="Sample Quantiles")
 # Definitely does not follow a line; no Pareto distribution is established.
 
 alpha = 1.25
 pdf = function(y) alpha*exp(y)^(-alpha-1)
-hist(log(sug_delt_noNA), prob=TRUE)
+hist(log(sug_delt_noNA), prob=TRUE,
+     main = "Log of Sugar Prices: Does a Pareto Fit?",
+     xlab="Log of Changes in Sugar Prices",
+     col = "purple")
 curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
 # Rescaled logarithmically, the Pareto distribution fits the shape of the logs of sugar
 # price changes' histogram. However, the Pareto curve does not overlay the
