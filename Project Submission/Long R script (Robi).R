@@ -251,3 +251,93 @@ t.test(recession_samples,nonrecession_samples,alternative="two.sided")
 # However, the classical test may be inaccurate because it relies on the assumptions
 # that both categories are normally distributed, and have the same variance
 
+
+
+
+
+# Here are some advanced regression techniques implemented in cool R packages!
+
+# Stepwise regression:
+library(MASS)
+library(car)
+
+
+# Let's see if we can make a model that predicts unemployment from the other variables.
+unemployment_reg <- lm(Unemployment ~ ., data=price_changes[,2:13])
+
+vif(unemployment_reg)
+# All of the values are less than 2, indicating that the predictors are not
+# related to each other, and the multilinear regression does not suffer from
+# multicollinearity. Therefore, all of these variables may be used
+# in a multiple linear regression model of recessions.
+
+summary(unemployment_reg)
+# As it turns out, none of the variables are significant predictors of
+# unemployment except for the recession indicator.
+
+# Let's see if we can improve the model using a stepwise regression to optimize
+# the Akaike information criterion and remove unnecessary variables.
+
+stepAIC(unemployment_reg)
+
+# Stepwise regression shows that the model is optimized when all price variables
+# are eliminated except for the recession indicator and the price change of crude oil.
+
+
+# Let's try again, but to predict recessions:
+recession_reg <- lm(recession_bool ~ ., data=price_changes[,2:13])
+
+vif(recession_reg)
+# Again, nothing over 2, so no multicollinearity issues.
+
+summary(recession_reg)
+# Nothing is relevant in a model to predict recessions, except for unemployment.
+
+
+
+# But we shouldn't be using linear models: logistic is more accurate since
+# recession is a boolean, so the y-values are 0 or 1.
+
+recession_reg <- glm(recession_bool ~ ., data=price_changes[,2:13])
+
+stepAIC(recession_reg)
+
+# The model for recession predictions does best with nothing but unemployment rate.
+
+
+
+
+
+
+# Vector autoregression:
+library(vars)
+
+# This lets us model future values of the target variable using past
+# as well as present values of the predictors.
+var_aic <- VAR(price_changes[,2:13], type = "none", lag.max = 5, ic = "AIC")
+summary(var_aic)
+
+# Trying to predict recessions from price history of all our goods is futile.
+# None of the variables, nor their histories, are significant contributors to
+# the likelihood of recession in the next month, except for whether there was a
+# recession during the previous month.
+
+# Sources used:
+# https://www.rdocumentation.org/packages/vars/versions/1.5-3/topics/VAR
+# https://www.r-econometrics.com/timeseries/varintro/
+# https://en.wikipedia.org/wiki/Vector_autoregression
+
+# However, recessions and crude oil prices are significantly predictive of
+# unemployment! You could try using them to forecast next month's unemployment.
+
+
+
+
+
+
+
+
+
+
+
+
