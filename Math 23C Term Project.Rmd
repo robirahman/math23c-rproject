@@ -49,10 +49,20 @@ Auxiliary questions we’ll be considering are
 
 ## Hypothesis
 
-\textbf{Pre-register our hypotheses here!}
+Robi:
 
+Commodities tend to increase in price when the economy is growing. Recessions
+are periods with negative GDP growth, so commodity prices will decrease, or at
+least increase by a lesser amount on average than during growth periods.
 
+Unemployment generally rises during recessions and is low when the economy is
+strong. Therefore, we will find that unemployment rates are higher during recessions
+than during non-recession periods.
 
+The 2020-21 coronavirus pandemic is an exception to these, with high unemployment
+but a prosperous stock market. It will appear different than the other two recessions,
+such that you can distinguish it from the rest of the data set based on its upward
+trend in commodity prices.
 
 ## Analysis - Robi
 
