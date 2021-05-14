@@ -1602,116 +1602,137 @@ weat_COVID <- daily_price_WEAT[which(dailydata_ALL$rec_types_use.USRECD == 3)]
 #------------------------------------
 
 # Histogram of prices
-hist(daily_price_WEAT, breaks=50)
-# Possibly follows a gamma distribution, with greatest frequency between 5 and 10
+hist(daily_price_WEAT, breaks=50, main="Daily Wheat Prices from Jan 2001—Feb 2021", 
+     xlab = "Prices in USD", ylab = "Frequency", col="yellow")
+# Historically, prices have been between $5-$25, with greater frequency between $5-$7.
+# Note that the most information that can be gleaned from historical data is exactly that:
+# this is only historical data. 
 summary(daily_price_WEAT)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 4.92    7.54   11.22   12.37   15.28   26.31 
+# 4.86    6.23    9.10   11.76   17.41   25.35  
 var(daily_price_WEAT)
-#28.22823
+#41.45526
 sd(daily_price_WEAT)
-#5.313025
+#6.438576
 
 # Comparing prices during recessions
 summary(weat_no_rec)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 4.92    7.93   11.02   12.17   14.81   26.31
-hist(weat_no_rec)
-# Definitely not normal. Looks similar to wind speeds' distribution, but weatar
-# prices do not fit the usual use case for a Weibull distribution.
+# 4.86    6.38    9.05   11.35   16.23   25.35
+hist(weat_no_rec, main=c("Daily Wheat Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="yellow")
+# Definitely not normal. Looks similar to wind speeds' distribution. 
+# Purpose of this is to compare with recessionary periods.
 var(weat_no_rec)
-# 24.92819
+# 35.52707
 sd(weat_no_rec)
-# 4.992814
+# 5.960459
 
 weat_any_rec <- dailydata_ALL$priceWEAT[which(dailydata_ALL$rec_inds_use.USRECD == 1 & dailydata_ALL$priceWEAT != ".")]
 # Cast the variable to ensure usage as numbers, not strings
 weat_any_rec <- as.numeric(weat_any_rec)
 summary(weat_any_rec)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 4.92    6.93   16.13   13.50   19.29   24.66
-hist(weat_any_rec)
-# Extremely bimodal. It appears to be 50/50 split in prices < $7 and prices >$14.
+# 4.860   5.463  18.730  13.994  21.348  25.350
+hist(weat_any_rec, main=c("Daily Wheat Prices from Jan 2001—Feb 2021", "Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="yellow")
+# Extremely bimodal. It appears to be 50/50 split in prices < $7 and prices >$15.
 var(weat_any_rec)
-# 44.49444
+# 67.43344
 sd(weat_any_rec)
-# 6.670416
+# 8.211787
+
 
 summary(weat_dotcom)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 18.37   19.80   21.73   21.62   23.35   24.66 
-hist(weat_dotcom)
-# A lot of fluctuation during the dotcom recession.
-# More evenly distributed prices than during no recession period.
-# Comparisons to other recessions below.
+# 18.60   20.30   21.12   21.56   22.36   25.30
+hist(weat_dotcom, main=c("Daily Wheat Prices Post-DotCom Bubble", "Recession: Apr 2001 — Nov 2001"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="orange")
+# Prices during this recession: negative skewness
 var(weat_dotcom)
-# 3.594999
+# 3.055292
 sd(weat_dotcom)
-# 1.896048
+# 1.747939
 
 summary(weat_GreatRec)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 4.920   6.445   6.900   6.724   7.270   7.810 
-hist(weat_GreatRec)
-# long lower tail, negative skewness.
+# 4.860   5.260   5.450   5.487   5.715   6.150 
+hist(weat_GreatRec, main=c("Daily Wheat Prices: Great Recession", "Recession: Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark orange")
+# Prices of wheat during the Great Recession have lower variance; more clustered around the mean,
+# less skewness. Not normal though.
+curve(dnorm(x, mean(weat_GreatRec), sd = sqrt(var(weat_GreatRec))), col="dark green", lwd=3.2, add=TRUE)
 var(weat_GreatRec)
-# 0.4793186
+# 0.09694789
 sd(weat_GreatRec)
-#  0.6923284
-# The variance during the Great Recession is much lower than during
+#  0.3113646
+# The variance during the Great Recession is lower than during
 # the dotcom recession.
 
 weat_COVID <- dailydata_ALL$priceWEAT[which(dailydata_ALL$rec_types_use.USRECD == 3 & dailydata_ALL$priceWEAT != ".")]
 weat_COVID <- as.numeric(weat_COVID)
 summary(weat_COVID)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 15.78   17.04   17.84   18.21   19.25   21.80
-hist(weat_COVID)
-# Heavier upper tail than during Great Recession; has a slight positive skewness.  
+# 17.91   19.43   21.33   21.70   23.96   25.35
+hist(weat_COVID, main=c("Daily Wheat Prices during COVID-19 Recession", "Recession: Mar 2020 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light yellow")
+# Bimodal during pandemic  
 var(weat_COVID)
-# 2.385077
+# 5.13271
 sd(weat_COVID)
-# 1.544369
+# 2.265548
 
 #Line graphs
-plot(daily_price_WEAT, type = 'l')
+plot(daily_price_WEAT, type = 'l', main=c("Daily Wheat Prices", "Jan 2001 — Feb 2021"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
 # Upswings around recessionary periods. 
-plot(weat_no_rec, type = 'l')
+plot(weat_no_rec, type = 'l', main=c("Daily Wheat Prices","Non-Recessionary Periods", "Jan 2001 — Feb 2021"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
 # No recession looks very similar to overall prices pattern
-plot(weat_any_rec, type= 'l')
+plot(weat_any_rec, type= 'l', main=c("Daily Wheat Prices","Recessionary Periods", "Jan 2001 — Feb 2021"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
 # Huge trough 
-plot(weat_dotcom, type = 'l')
-# downward trend; steep decline
-plot(weat_GreatRec, type='l')
-# Steep decline in the latter months before climbing back up.
-plot(weat_COVID, type='l')
-# During COVID recession months, there is a consistent downward trend, with no extreme declines.
+plot(weat_dotcom, type = 'l', main=c("Daily Wheat Prices","DotCom Crash", "Apr 2001 — Nov 2001"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
+# Steep increase in the latter half
+plot(weat_GreatRec, type='l', main=c("Daily Wheat Prices","Great Recession", "Jan 2008 — Jun 2009"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
+# Volatile, with extreme ups and downs
+plot(weat_COVID, type='l', main=c("Daily Wheat Prices","COVID-19 Recession", "Mar 2020 — Feb 2021"), 
+     xlab="Index: Daily", ylab = "Prices in USD")
+# There is a steep incline; the peak covers the middle portion before
+# prices fall again.
 # All follow random walk non-patterns
 
 # Log comparisons to rescale
-hist(log(daily_price_WEAT))
-hist(log(weat_no_rec))
-#Very fat curves
+hist(log(daily_price_WEAT), main=c("Log of Daily Wheat Prices", "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="orange")
+hist(log(weat_no_rec), main=c("Log of Daily Wheat Prices", "Non-Recessionary Periods", "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="orange")
+# Greater frequency in lower half
 
-hist(log(weat_any_rec))
-# mean(log(weat_any_rec)) is 2.462173
-# Bimodal around the mean.
-hist(log(weat_dotcom))
-# Similarly, bimodal around the mean
-# mean(log(weat_dotcom)) = 3.069934 
+hist(log(weat_any_rec), main=c("Log of Daily Wheat Prices", "Recessionary Periods", "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark orange")
+# mean(log(weat_any_rec)) is 2.421868
+# Bimodal, but not clustered around the mean.
+hist(log(weat_dotcom), main=c("Log of Daily Wheat Prices", "DotCom Crash", "Apr 2001 — Nov 2001"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="orange")
+# Slight positive skewness, long and heavy tails
+# mean(log(weat_dotcom)) = 3.067471
 
-hist(log(weat_GreatRec))
-# Bimodal around the mean 
-# mean(log(weat_GreatRec)) = 1.899976
-hist(log(weat_COVID))
-# Not bimodal, unlike the others. A very fat curve with a small peak
-# mean(log(weat_COVID)) = 2.898559
-curve(dnorm(x, mean(log(weat_COVID)), sd = sqrt(var(log(weat_COVID)))), add=TRUE, col = "red")
-# Does not fit well; ot a normal distribution
+hist(log(weat_GreatRec), main=c("Log of Daily Wheat Prices", "Great Recession", "Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark orange")
+# Clustered around the mean, very very fat tails 
+# mean(log(weat_GreatRec)) = 1.700779
+hist(log(weat_COVID), main=c("Log of Daily Wheat Prices", "COVID-19 Recession", "Mar 2020 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light yellow")
+# Bimodal, heavier left half
+# mean(log(weat_COVID)) = 3.071734
 
 #Difference in log values over time
-hist(diff(log(daily_price_WEAT)))
-# Very small, nothing that stands out
+hist(diff(log(daily_price_WEAT)), main=c("Differences Between Daily Wheat Prices", "Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="orange")
+# Very small, very small differences, clustered around 0.
 
 
 #-------------
