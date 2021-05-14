@@ -14,14 +14,14 @@ library(psych)
 library(ggplot2)
 ```
 
-## Question
+# Question
 
 Can the price changes in certain commodities reveal the kind of recession the U.S. is in? How do
 qualitatively different recessions affect commodities’ prices? We are specifically interested in the
 dotcom crash of the early 2000s, the Great Recession, and the COVID-19 pandemic. 
 
 
-## Motivation
+# Motivation
 
 “The stock market is not the economy.” This refrain frequently sounds. We have decided to assess
 whether commodity prices that could signal the health of the general public correlated with
@@ -278,7 +278,7 @@ several prerequisite assumptions for the statistical validity of the t test are
 not met, such as normality of the distribution of unemployment rates, or equal
 variance in unemployment within the recession vs non-recession periods.
 
-
+## Regression Exploration
 
 Finally, some advanced regression techniques can be used for modeling applications
 based on this dataset. Stepwise regression is a technique wherein a model of many
@@ -351,7 +351,7 @@ forecast upcoming job market trends.
 
 
 
-## Distribution Analysis on Daily Data - Sharon
+# Distribution Analysis on Daily Data - Sharon
 
 ```{r}
 # loading the daily data
@@ -399,7 +399,7 @@ other stable distributions, such as a Levy distribution.
 
 We present the results for sugar here.
 
-# Prices: The Example of Sugar
+## Prices: The Example of Sugar
 ```{r}
 # Note: the values are strings, not numbers. So need to not include the 
 # missing values.
@@ -415,7 +415,7 @@ sug_dotcom <- daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 1)]
 sug_GreatRec <- daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 2)]
 sug_COVID <- daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 3)]
 ```
-# Price of the Good
+## Price of the Good
 Note that assessing the prices alone provides an incomplete picture, as we are only
 looking at twenty-year period for the prices. These prices depend on too
 many factors for us to meaningfully treat them as random variables with just
@@ -423,7 +423,7 @@ this set of data. However, the price changes and magnitudes of changes of the pr
 changes are more random, and treating them as random variables could provide
 more meaningful information about the goods' prices.
 
-# Overview of sugar's prices
+## Overview of sugar's prices
 
 We did analysis on prices for the different recessionary periods.
 
@@ -520,8 +520,8 @@ sd(sug_COVID)
 # See the full R-script for the same analysis rescaled logarithmically.
 
 ```
-# Sugar: First Order and Second Order Price Changes:
-# Testing Price Changes & Differences in Price Changes
+## Sugar: First Order and Second Order Price Changes:
+### Testing Price Changes & Differences in Price Changes
 We did the same analysis for price changes, and found more evidence of stable price changes clustered around 0. 
 That is, not only are the price changes clustered around 0, but so are the changes of the price changes.
 Using a QQ plot and Chi-square test, we reject normality for both the first and second order price changes.
@@ -679,7 +679,7 @@ sd(daily_sug_diff_diff_C19)
 # 0.4904333
 ```
 
-# Testing Normality on First Order Price Changes
+## Testing Normality on First Order Price Changes
 ```{r}
 # Log Price Changes/percentage changes
 qqnorm(daily_sug_price_change,
@@ -723,7 +723,7 @@ chiSqTest <- function(x, nbins = 10) {
 ```
 
 
-# Testing Normality on Second Order Price Changes
+## Testing Normality on Second Order Price Changes
 ```{r}
 daily_pval_sug_diff_diff<- chiSqTest(daily_sug_diff_diff)
 # "Chi-sq test statistic:"
@@ -740,7 +740,7 @@ qqline(daily_sug_diff_diff)
 # For sugar, changes in price changes have "lighter" tails, unlike for oil.
 ```
 
-# Testing a Different Distribution: Pareto
+## Testing a Different Distribution: Pareto
 
 At this point, our hypothesis of an underlying normal price distribution for sugar has been rejected.
 We try instead a Pareto distribution on the prices themselves as well as on the price changes.
