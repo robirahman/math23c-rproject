@@ -560,7 +560,9 @@ var(daily_sug_diff_diff)
 sd(daily_sug_diff_diff)
 # 0.5801336
 
-hist(daily_sug_price_change_rec)
+hist(daily_sug_price_change_rec,
+    main=c("Changes in Daily Sugar Prices", "Recessionary Periods", 
+            "Jan 2001 — Feb 2021"))
 summary(daily_sug_price_change_rec)
 #     Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
 # -11.430001  -0.090000   0.000000  -0.008352   0.050000  15.960000
@@ -568,7 +570,7 @@ summary(daily_sug_price_change_rec)
 # difference in price changes
 daily_sug_diff_diff_rec <- diff(daily_sug_price_change_rec)
 hist(daily_sug_diff_diff_rec,
-     main=c("Changes in Daily Sugar Prices", "Recessionary Periods", 
+     main=c("Second Order Changes in Daily Sugar Prices", "Recessionary Periods", 
             "Jan 2001 — Feb 2021"), 
      xlab = "Prices in USD", ylab = "Frequency", col="magenta")
 # Changes in price changes for sugar cluster around 0, but there
@@ -583,7 +585,10 @@ sd(daily_sug_diff_diff_rec)
 
 #****************
 
-hist(daily_sug_price_chng_dotcom)
+hist(daily_sug_price_chng_dotcom,
+     main=c("Changes in Daily Sugar Prices", 
+            "DotCom Crash", "Apr 2001 — Nov 2001"),
+            xlab = "Prices in USD", ylab = "Frequency", col="pink")
 # Long thin tails with a tight curve
 summary(daily_sug_price_chng_dotcom)
 #    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
@@ -592,7 +597,7 @@ summary(daily_sug_price_chng_dotcom)
 # difference in price changes
 daily_sug_diff_diff_dotcom <- diff(daily_sug_price_chng_dotcom)
 hist(daily_sug_diff_diff_dotcom,
-     main=c("Changes in Daily Sugar Prices", 
+     main=c("Second Order Changes in Daily Sugar Prices", 
             "DotCom Crash", "Apr 2001 — Nov 2001"), 
      xlab = "Prices in USD", ylab = "Frequency", col="pink")
 # During the dotcom crash, we see that the changes
@@ -607,7 +612,10 @@ sd(daily_sug_diff_diff_dotcom)
 # 0.6668486
 
 #****************
-hist(daily_sug_price_chng_GR)
+hist(daily_sug_price_chng_GR,
+     main=c("Changes in Daily Sugar Prices", 
+            "Great Recession", "Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
 hist(daily_sug_price_chng_GR, breaks = 50)
 # A much more normal-looking distribution than compared to the others.
 curve(dnorm(x, mean(daily_sug_price_chng_GR), sd = sqrt(var(daily_sug_price_chng_GR))), add=TRUE, col = "red")
@@ -621,7 +629,7 @@ summary(daily_sug_price_chng_GR)
 # difference in price changes
 daily_sug_diff_diff_GR <- diff(daily_sug_price_chng_GR)
 hist(daily_sug_diff_diff_GR,
-     main=c("Changes in Daily Sugar Prices", 
+     main=c("Second Order Changes in Daily Sugar Prices", 
             "Great Recession", "Jan 2008 — Jun 2009"), 
      xlab = "Prices in USD", ylab = "Frequency", col="magenta")
 hist(daily_sug_diff_diff_GR, breaks = 100, 
