@@ -192,9 +192,15 @@ df_comm$rec2008 <- df_comm$Date >= df_comm$Date[84] & df_comm$Date <= df_comm$Da
 df_comm$rec2020 <- df_comm$Date >= df_comm$Date[230] & df_comm$Date <= df_comm$Date[241]
 
 # Plots for each recession's monthly indicators, left as 0 and 1
-plot(df_comm$Date, df_comm$rec2001)
-plot(df_comm$Date, df_comm$rec2008)
-plot(df_comm$Date, df_comm$rec2020)
+plot(df_comm$Date, df_comm$rec2001,
+     main="DotCom Crash Period", 
+     xlab = "Year", ylab = "Recession Indicator")
+plot(df_comm$Date, df_comm$rec2008,
+     main="Great Recession Period", 
+     xlab = "Year", ylab = "Recession Indicator")
+plot(df_comm$Date, df_comm$rec2020,
+     main="COVID-19 Recession Period", 
+     xlab = "Year", ylab = "Recession Indicator")
 
 
 #************************
@@ -225,26 +231,41 @@ length(df_comm$Gold..USD...ozt.)
 #241 observations
 
 # Histogram of prices
-hist(df_comm$Gold..USD...ozt., breaks=50)
+hist(df_comm$Gold..USD...ozt., breaks=50,
+     main="Monthly Prices for Gold", 
+     xlab = "Prices in USD", ylab = "Frequency", col="blue")
 # Bimodal, no apparent skewness
 # We continue the gold analysis by breaking the monthly data into two time
 # periods because the bimodality appears to align with the two decades.
 
 #Line graphs
-plot(df_comm$Date, df_comm$Gold..USD...ozt., type = 'l')
+plot(df_comm$Date, df_comm$Gold..USD...ozt., type = 'l',
+     main="Monthly Price of Gold over Time",
+     xlab="Date",
+     ylab="Price in USD per Troy Ounce")
 # Looks like a random walk
 
 # Log comparisons of gold prices to rescale
-hist(log(df_comm$Gold..USD...ozt.))
-# Not a normal distribution; negative skewness?
+hist(log(df_comm$Gold..USD...ozt.),
+     main = "Log of Monthly Gold Prices",
+     xlab="Price of Gold per Troy Oz in USD",
+     ylab="Frequency",
+     col="blue")
+# Not a normal distribution; negative skewness
 
 #Difference in log values over time
-hist(diff(log(df_comm$Gold..USD...ozt.)))
+hist(diff(log(df_comm$Gold..USD...ozt.)),
+     main="Log of Monthly Gold Prices",
+     xlab="Price of Gold",
+     col="light blue")
 # Normal-ish distribution
 
 # Dataset is organized chronologically
 # First half of the two decades
-hist(df_comm$Gold..USD...ozt.[1:120])
+hist(df_comm$Gold..USD...ozt.[1:120], 
+     main="Monthly Gold Prices from Feb 2001 to Jan 2011",
+     xlab="Price of Gold/Troy Oz in USD",
+     col="cyan")
 summary(df_comm$Gold..USD...ozt.[1:120])
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 260.5   359.6   552.4   626.0   888.9  1390.5
@@ -256,7 +277,10 @@ sd(df_comm$Gold..USD...ozt.[1:120])
 
 
 # Second half 
-hist(df_comm$Gold..USD...ozt.[121:240])
+hist(df_comm$Gold..USD...ozt.[121:240],
+     main="Monthly Gold Prices from Feb 2011 to Feb 2021",
+     xlab="Price of Gold/Troy Oz in USD",
+     col="dark cyan")
 summary(df_comm$Gold..USD...ozt.[121:240])
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #1076    1244    1318    1406    1592    1969 
@@ -276,7 +300,11 @@ sd(df_comm$Gold..USD...ozt.[121:240])
 # Monthly: Differences in price changes
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 gold_price_change_Feb01Jan2011 <- diff(log(df_comm$Gold..USD...ozt.[1:120]))
-hist(gold_price_change_Feb01Jan2011)
+hist(gold_price_change_Feb01Jan2011,
+     main="Monthly Gold Price Changes from Feb 2001 to Jan 2011",
+     xlab="Price of Gold/Troy Oz in USD",
+     col="cyan")
+# Note the long tails, and the clustering around 0
 summary(gold_price_change_Feb01Jan2011)
 #     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
 # -0.12480 -0.01037  0.01447  0.01385  0.04141  0.10217 
@@ -291,7 +319,12 @@ curve(dnorm(x,
 #The normal distribution is not a good fit.
 
 gold_price_change_Feb11Jan21 <- diff(log(df_comm$Gold..USD...ozt.[121:240]))
-hist(gold_price_change_Feb11Jan21)
+hist(gold_price_change_Feb11Jan21,
+     main=c("Monthly Gold Price Changes", 
+            "from Feb 2011 to Feb 2021"),
+     xlab="Price of Gold/Troy Oz in USD",
+     col="dark cyan")
+# Note the wide curve and the long and thin upper tail
 summary(gold_price_change_Feb11Jan21)
 #    Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
 # -0.0683367 -0.0183982 -0.0004282  0.0025723  0.0239885  0.1119255 
@@ -303,13 +336,17 @@ curve(dnorm(x,
             mean(gold_price_change_Feb11Jan21), 
             sd=sqrt(var(gold_price_change_Feb11Jan21))), 
       add=TRUE, col = "red")
-# Normal distribution is not a good fit
+# Normal distribution for this mean and std deviation is not a good fit
 
 
 # difference in price changes
 gold_diff_diffFeb01Jan2011 <- diff(diff(log(df_comm$Gold..USD...ozt.[1:120])))
-hist(gold_diff_diffFeb01Jan2011)
-# Tight normal distribution?
+hist(gold_diff_diffFeb01Jan2011,
+     main=c("Changes in Monthly Gold Price Changes", 
+            "from Feb 2001 to Jan 2011"),
+     xlab="Price of Gold/Troy Oz in USD",
+     col="cyan")
+# Tight distribution, with long thin tails.
 summary(gold_diff_diffFeb01Jan2011)
 #     Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
 # -0.2255643 -0.0347651  0.0030388 -0.0002228  0.0316488  0.1858971 
@@ -321,10 +358,17 @@ curve(dnorm(x,
             mean(gold_diff_diffFeb01Jan2011), 
             sd=sqrt(var(gold_diff_diffFeb01Jan2011))), 
       add=TRUE, col = "red")
-# Not a good fit
+# The normal curve is not a good fit
 
 gold_diff_diffFeb11Jan21 <- diff(diff(log(df_comm$Gold..USD...ozt.[121:240])))
-hist(gold_diff_diffFeb11Jan21)
+hist(gold_diff_diffFeb11Jan21,
+     main=c("Changes in Monthly Gold Price Changes",
+     "from Feb 2011 to Feb 2021"),
+     xlab="Price of Gold/Troy Oz in USD",
+     col="dark cyan")
+# Compared to the first half of the decade, the long tails are fatter.
+# There was greater volatility, as there was more variance in
+# the swings between price changes.
 summary(gold_diff_diffFeb11Jan21)
 #     Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
 # -0.1044888 -0.0275081 -0.0001921 -0.0002554  0.0248185  0.1041309 
@@ -336,7 +380,7 @@ curve(dnorm(x,
             mean(gold_diff_diffFeb11Jan21), 
             sd=sqrt(var(gold_diff_diffFeb11Jan21))), 
       add=TRUE, col = "red")
-# Not a good fit
+# The normal curve is not a good fit for the changes in price changes.
 
 # The intraperiod prices changes during the two periods is very similar.
 # The differences in price changes, however, is less similar. There is
@@ -373,23 +417,39 @@ pval_gold_diff_diffFeb11Jan21 <- chiSqTest(gold_diff_diffFeb11Jan21)
 # QQ plots to see how distribution compares to normal distribution
 
 # Log Price Changes/percentage changes
-qqnorm(gold_price_change_Feb01Jan2011)
+qqnorm(gold_price_change_Feb01Jan2011,
+       main=c("Normal Q-Q Plot for",
+              "Gold Price Changes",
+              "Feb 2001 to Jan 2011"))
 qqline(gold_price_change_Feb01Jan2011) 
+# This looks fairly normal except for the few data points on
+# the tails that hint at heavier tails. See the monthly data analysis
+# on gold for more details.
 
-qqnorm(gold_diff_diffFeb11Jan21)
+qqnorm(gold_diff_diffFeb11Jan21,
+       main=c("Normal Q-Q Plot for",
+              "Gold Price Changes",
+              "Feb 2011 to Feb 2021"))
 qqline(gold_diff_diffFeb11Jan21) 
+# Has heavier tails than the first decade's data.
 
 # Changes in log price changes/percentage changes
-qqnorm(gold_diff_diffFeb01Jan2011)
+qqnorm(gold_diff_diffFeb01Jan2011,
+       main=c("Normal Q-Q Plot for",
+              "Log of Gold Price Changes",
+              "Feb 2001 to Jan 2011"))
 qqline(gold_diff_diffFeb01Jan2011) 
-# Looks normal, but need to look more closely at the tails.
-# There is divergence from the x=y line at the tails, 
-# implying that the dataset is heavy-tailed.It's heavier-tailed
+# There is great divergence from the qqline,
+# implying that the dataset is heavy-tailed. It's heavier-tailed
 # than the monthly data from the second half of the time period.
 
-qqnorm(gold_diff_diffFeb11Jan21)
+qqnorm(gold_diff_diffFeb11Jan21,
+       main=c("Normal Q-Q Plot for",
+              "Gold Price Changes",
+              "Feb 2011 to Feb 2021"))
 qqline(gold_diff_diffFeb11Jan21) 
-# See above.
+# See above, under the information for the first
+# decade's QQ plot.
 
 
 
@@ -397,11 +457,22 @@ qqline(gold_diff_diffFeb11Jan21)
 # However, looking at this at the monthly level is likely not granular enough
 # for us to conclude anything meaningful beyond the clustering around
 # certain prices. This is in line with the heavy-tailed QQ plots.
-hist(df_comm$Gold..USD...ozt.[which(df_comm$rec_indic == 0)])
-hist(df_comm$Gold..USD...ozt.[which(df_comm$rec_indic == 1)])
+hist(df_comm$Gold..USD...ozt.[which(df_comm$rec_indic == 0)],
+     main=c("Monthly Wheat Prices from Jan 2001—Feb 2021", "Non-Recessionary"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light blue")
+hist(df_comm$Gold..USD...ozt.[which(df_comm$rec_indic == 1)],
+     main=c("Monthly Wheat Prices from Jan 2001—Feb 2021", "Recessionary"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light blue")
 
-hist(df_comm$Gold..USD...ozt.[which(df_comm$rec_indic == 0)], breaks=50)
-hist(df_comm$Gold..USD...ozt.[which(df_comm$rec_indic == 1)], breaks=50)
+#Binned for clearer view
+hist(df_comm$Gold..USD...ozt.[which(df_comm$rec_indic == 0)], breaks=50,
+     main=c("Monthly Wheat Prices from Jan 2001—Feb 2021", "Non-Recessionary"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light blue")
+hist(df_comm$Gold..USD...ozt.[which(df_comm$rec_indic == 1)], breaks=50,
+     main=c("Monthly Wheat Prices from Jan 2001—Feb 2021", "Recessionary"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light blue")
+# As stated above, the monthly data is not granular enough to yield anything 
+# meaningful for recessionary periods.
 
 #~~~~~~~~~~~~~
 # Daily: Gold
@@ -432,7 +503,10 @@ gold_COVID <- daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 3)]
 #------------------------------------
 
 # Histogram of prices
-hist(daily_price_GOLD, breaks=50)
+hist(daily_price_GOLD, breaks=50,
+     main="Daily Gold Prices from Jan 2001—Feb 2021", 
+     xlab = "Prices in USD", ylab = "Frequency", col="cyan")
+# Historically, gold has had a 
 summary(daily_price_GOLD)
 #  Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #256.7   544.8  1173.2  1015.8  1327.8  2061.5
