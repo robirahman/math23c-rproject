@@ -1798,74 +1798,95 @@ sd(daily_weat_diff_diff_rec)
 
 #****************
 
-hist(daily_weat_price_chng_dotcom)
+hist(daily_weat_price_chng_dotcom, main=c("Changes in Daily Wheat Prices", 
+                                          "DotCom Crash", "Apr 2001 — Nov 2001"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="orange")
 # Long thin tails with a tight curve
 summary(daily_weat_price_chng_dotcom)
 #    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-# -2.22000 -0.18000  0.00000 -0.02448  0.10750  2.51000
+#-1.09000 -0.22750 -0.00500  0.02057  0.24750  1.61000
 
 # difference in price changes
 daily_weat_diff_diff_dotcom <- diff(daily_weat_price_chng_dotcom)
-hist(daily_weat_diff_diff_dotcom)
-# During the dotcom crash, we see that the changes
-# in price changes have very long and thin tails; there is a little volatility.
-# However, most of the changes are still clustered around 0, and the variance is low.
+hist(daily_weat_diff_diff_dotcom, main=c("Differences in Changes in Daily Wheat Prices", 
+                                         "DotCom Crash", "Apr 2001 — Nov 2001"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark orange")
+# There is a wide curve in the difference in differences of the daily wheat prices
+# during the dot come crash. The tails are long as well. 
+# The presence of long tails for difference in price changes follows what we have seen so far
+# with all the goods.
 summary(daily_weat_diff_diff_dotcom)
-# Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-# -4.73000 -0.25000  0.00000  0.00185  0.23000  2.51000 
+#   Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+# -1.970001 -0.469997  0.009998 -0.001272  0.460001  1.930003 
 var(daily_weat_diff_diff_dotcom)
-# 0.4446871
+# 0.4145359
 sd(daily_weat_diff_diff_dotcom)
-# 0.6668486
+# 0.6438447
 
 #****************
-hist(daily_weat_price_chng_GR)
-hist(daily_weat_price_chng_GR, breaks = 50)
-# A much more normal-looking distribution than compared to the others.
+hist(daily_weat_price_chng_GR, main=c("Changes in Daily Wheat Prices", 
+                                      "Great Recession", "Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark orange")
+hist(daily_weat_price_chng_GR, main=c("Changes in Daily Wheat Prices", 
+                                      "Great Recession", "Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark orange", breaks = 50)
+# A normal-looking distribution 
 curve(dnorm(x, mean(daily_weat_price_chng_GR), sd = sqrt(var(daily_weat_price_chng_GR))), add=TRUE, col = "red")
 # However, we see that the normal distribution for this mean and this standard deviation
-# does not well-match the histogram for daily weatar price changes during the Great Recession.
+# does not well-match the histogram for daily wheat price changes during the Great Recession.
+# There is too much clustering around 0.
 
 summary(daily_weat_price_chng_GR)
-# Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-# -0.310000 -0.060000  0.000000 -0.003821  0.050000  0.380000  
+#     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+# -0.260000 -0.050000  0.000000 -0.002077  0.040000  0.260000  
 
 # difference in price changes
 daily_weat_diff_diff_GR <- diff(daily_weat_price_chng_GR)
-hist(daily_weat_diff_diff_GR)
-hist(daily_weat_diff_diff_GR, breaks = 100)
+hist(daily_weat_diff_diff_GR, main=c("Differences in Changes of Daily Wheat Prices", 
+                                     "Great Recession", "Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark orange")
+hist(daily_weat_diff_diff_GR, breaks = 100, main=c("Differences in Changes of Daily Wheat Prices", 
+                                                   "Great Recession", "Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="dark orange")
 curve(dnorm(x, mean(daily_weat_diff_diff_GR), sd = sqrt(var(daily_weat_diff_diff_GR))), add=TRUE, col = "red")
 # The curve is too tightly clustered around the mean 
 # for this to follow the normal distribution.
 summary(daily_weat_diff_diff_GR)
-#  Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
-# -0.4200000 -0.0800000 -0.0100000 -0.0002571  0.0700000  0.4400000   
+#    Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -0.3500000 -0.0700000 -0.0100000  0.0001285  0.0700000  0.3800000  
 var(daily_weat_diff_diff_GR)
-# 0.01612983
+#  0.01174148
 sd(daily_weat_diff_diff_GR)
-# 0.1270033
+# 0.1083581
 
 #****************
 
-hist(daily_weat_price_chng_C19)
+hist(daily_weat_price_chng_C19, main=c("Changes in Daily Wheat Prices",
+                                       "COVID-19 Recession", 
+                                       "Mar 2020 — Feb 2021"), 
+     xlab="Index: Daily", ylab = "Prices in USD", col="light yellow")
 # The price changes remain clustered around the near-0 mean with a very long and thin
-# tail due to the extremes.
+# upper tail.
 summary(daily_weat_price_chng_C19)
 #     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-# -2.22000 -0.15000  0.00000 -0.02189  0.08500  2.51000  
+# -1.03000 -0.22000 -0.02000 -0.00529  0.20000  1.61000   
 
 # difference in price changes
 daily_weat_diff_diff_C19 <- diff(daily_weat_price_chng_C19)
-hist(daily_weat_diff_diff_C19)
+hist(daily_weat_diff_diff_C19, main=c("Differences in Changes in Daily Wheat Prices",
+                                      "COVID-19 Recession", 
+                                      "Mar 2020 — Feb 2021"), 
+     xlab="Index: Daily", ylab = "Prices in USD", col="yellow")
 # Continues to cluster around the near-0 mean for differences in price changes.
-# Continues to have very long and thin tails for the occasional outliers.
+# Continues to have extreme values that create very long and thin tails.
+# However, continues to be very clustered around a difference of 0.
 summary(daily_weat_diff_diff_C19)
-#     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-# -4.73000 -0.20750 -0.00500  0.00062  0.20000  2.51000 
+#     Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+#-1.9700010 -0.3674985  0.0000005 -0.0029845  0.3674987  1.6500020
 var(daily_weat_diff_diff_C19)
-# 0.2405248
+# 0.3166889
 sd(daily_weat_diff_diff_C19)
-# 0.4904333
+# 0.5627512
 
 
 
@@ -1876,29 +1897,30 @@ sd(daily_weat_diff_diff_C19)
 # Differences in the price changes
 daily_pval_weat_diff_diff<- chiSqTest(daily_weat_diff_diff)
 # "Chi-sq test statistic:"
-# "9888.67053452539"
+# "9814.32014456914"
 # "p-value with df = {nbins - 2}:"
 # "0"
-# We definitely reject the null hypothesis that weatar's changes in price changes
+# We definitely reject the null hypothesis that wheat's changes in price changes
 # follow a normal distribution.
 
 #QQ plots test of normality to see how distribution compares to normal distribution
 
 # Log Price Changes/percentage changes
-qqnorm(daily_weat_price_change)
+qqnorm(daily_weat_price_change, main="Normal Q-Q Plot for Price Changes in Wheat")
 qqline(daily_weat_price_change) 
 # The data usually follow the normal distribution, but the outliers 
-# of price changes creates heavy tails. The distribution is therefore not
-# normal. This matches what we have seen with gold, considered a safe haven good, and
-# oil, a price-inelastic good. Sugar is traditionally not thought of as either of these
-# types of goods, and yet it similarly has non-normal price changes, with heavy tails.
+# of price changes creates heavy tails. While most of the 
+# data create a normal distribution (thus the linear relationship), there 
+# are heavy tails due to the outliers of price changes. This matches what we have seen with gold, 
+# considered a safe haven good, oil, a price-inelastic good, and sugar, a "normal" commodity. 
 # This seems to be a trait native to prices themselves, regardless of type of good.
 
 
 # Changes in price changes
-qqnorm(daily_weat_diff_diff)
+qqnorm(daily_weat_diff_diff, main=c("Normal Q-Q Plot", "Differences of Price Changes in Wheat"))
 qqline(daily_weat_diff_diff) 
-# For weatar, changes in price changes have "lighter" tails, unlike for oil.
+# For wheat, changes in price changes are pretty normal, with heavy tails. These heavy tails are
+# lighter than they were for oil and sugar, however.
 
 #****************************************
 #*Recap: Histograms and weatar prices' normality
