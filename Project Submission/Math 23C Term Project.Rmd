@@ -351,23 +351,461 @@ forecast upcoming job market trends.
 
 
 
-## Distribution Analysis - Sharon
+## Distribution Analysis on Daily Data - Sharon
 
 ```{r}
+# loading the daily data
+daily_data <- read.csv("dailydata.csv", stringsAsFactors=FALSE); head(daily_data)
+dailydata_ALL <- data.frame(daily_data)
 
 ```
+Please see the long R script (LongRScript_dailydata_Sharon.R) for the full daily data analyses, 
+in which we analyze the daily price data, price changes, and differences in price changes.
+
 ## Comparison Across Goods
+We selected four different goods to do in-depth analysis:
+gold, oil, sugar, and wheat. The thinking behind this was to compare
+the distributions of the different price behaviors, both between recessionary and non-recessionary 
+periods, as well as comparison across different types of recessions. Gold and oil
+were selected because they are goods that are the classically unusual goods. We expected gold's safe 
+haven investment status and oil's inelastic prices to be apparent in their price changes
+and differences in their price changes. Sugar and wheat, as traditional commodities, were
+expected to behave differently from these two unusual goods. 
 
-# Prices
-During the two decades...the first half and second half...
-The effects during a recession...achieved more granularity by using daily data.
+Assumptions: The population of goods' prices has an underlying normal distribution.
 
-# Price Changes
-Using daily data
+Hypothesis: We hypothesized that at least either sugar or wheat prices would follow a normal
+distribution during non-recessionary months, and diverge during recessionary periods. 
+We hypothesized their price changes and differences in prices changes would
+do the same. This was motivated by understanding that these are goods with substitutes. Oil
+and gold do not have historically have substitutes, but we made the same underlying assumption.
 
-# Difference in Price Changes
-Using daily data
+Conclusion: Instead, we found that none of the goods' daily prices, price changes, or
+changes in price changes followed a normal distribution. Using a Chi-square test, 
+we rejected the null hypothesis of a normal distribution for all goods; our
+p-values were all close to 0. For prices, the values clustered too
+consistently around the mean, no matter the status of whether or not there was a recession,
+or the type of recession. Price changes always had long tails, but stayed clustered
+around zero, indicating the stability of prices. And as for changes of the price changes, 
+these tails were very long and thin as well. Prices do change, but rarely. And when they do,
+they rarely change greatly. 
 
+As a follow-up, we used our own code for testing a Pareto distribution using quantiles (this used
+code from problem set #5). Our initial results do not indicate a Pareto distribution for
+these goods' prices during these twenty years. A Pareto distribution was not found
+for these goods' prices changes either. A follow-up study would investigate more 
+the underlying distribution of each good's prices, focusing particularly on 
+other stable distributions, such as a Levy distribution.
+
+We present the results for sugar here.
+
+# Prices: The Example of Sugar
+```{r}
+# Note: the values are strings, not numbers. So need to not include the 
+# missing values.
+daily_price_SUG <- as.numeric(dailydata_ALL$priceSUG[which(dailydata_ALL$priceSUG != ".")])
+
+# Recession variables
+sug_no_rec <- daily_price_SUG[which(dailydata_ALL$rec_inds_use.USRECD == 0)]
+sug_any_rec <- daily_price_SUG[which(dailydata_ALL$rec_inds_use.USRECD == 1)]
+
+#Types of recessions variables
+sug_no_rec_type <- daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 0)]
+sug_dotcom <- daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 1)]
+sug_GreatRec <- daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 2)]
+sug_COVID <- daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 3)]
+```
+# Price of the Good
+Note that assessing the prices alone provides an incomplete picture, as we are only
+looking at twenty-year period for the prices. These prices depend on too
+many factors for us to meaningfully treat them as random variables with just
+this set of data. However, the price changes and magnitudes of changes of the price 
+changes are more random, and treating them as random variables could provide
+more meaningful information about the goods' prices.
+
+# Overview of sugar's prices
+
+We did analysis on prices for the different recessionary periods.
+
+```{r}
+# Histogram of prices
+hist(daily_price_SUG, breaks=50,
+     main="Daily Sugar Prices from Jan 2001—Feb 2021", 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
+# Possibly follows a gamma distribution, with greatest frequency between 5 and 10
+summary(daily_price_SUG)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 4.92    7.54   11.22   12.37   15.28   26.31 
+var(daily_price_SUG)
+#28.22823
+sd(daily_price_SUG)
+#5.313025
+
+# Comparing prices during recessions
+summary(sug_no_rec)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 4.92    7.93   11.02   12.17   14.81   26.31
+hist(sug_no_rec,
+     main=c("Daily Sugar Prices from Jan 2001—Feb 2021", "Non-Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
+# Definitely not normal. Looks similar to wind speeds' distribution, but sugar
+# prices do not fit the usual use case for a Weibull distribution.
+var(sug_no_rec)
+# 24.92819
+sd(sug_no_rec)
+# 4.992814
+
+sug_any_rec <- dailydata_ALL$priceSUG[which(dailydata_ALL$rec_inds_use.USRECD == 1 & dailydata_ALL$priceSUG != ".")]
+# Cast the variable to ensure usage as numbers, not strings
+sug_any_rec <- as.numeric(sug_any_rec)
+summary(sug_any_rec)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 4.92    6.93   16.13   13.50   19.29   24.66
+hist(sug_any_rec,
+     main=c("Daily Sugar Prices from Jan 2001—Feb 2021", "Recessionary Periods"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="pink")
+# Extremely bimodal. It appears to be 50/50 split in prices < $7 and prices >$14.
+var(sug_any_rec)
+# 44.49444
+sd(sug_any_rec)
+# 6.670416
+```
+For sugar, the prices are heavily weighed on the lower half. When we look at prices during the recession,
+the prices are bimodal. For sugar, as for other goods, we found some difference in variance of the prices
+among different recessions.
+
+```{r}
+summary(sug_dotcom)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 18.37   19.80   21.73   21.62   23.35   24.66 
+hist(sug_dotcom,
+     main=c("Daily Sugar Prices Post-DotCom Bubble", "Recession: Apr 2001 — Nov 2001"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
+# A lot of fluctuation during the dotcom recession.
+# More evenly distributed prices than during no recession period.
+# Comparisons to other recessions below.
+var(sug_dotcom)
+# 3.594999
+sd(sug_dotcom)
+# 1.896048
+
+summary(sug_GreatRec)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 4.920   6.445   6.900   6.724   7.270   7.810 
+hist(sug_GreatRec,
+     main=c("Daily Sugar Prices: Great Recession", "Recession: Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="light pink")
+# long lower tail, negative skewness.
+var(sug_GreatRec)
+# 0.4793186
+sd(sug_GreatRec)
+#  0.6923284
+# The variance during the Great Recession is much lower than during
+# the dotcom recession.
+
+sug_COVID <- dailydata_ALL$priceSUG[which(dailydata_ALL$rec_types_use.USRECD == 3 & dailydata_ALL$priceSUG != ".")]
+sug_COVID <- as.numeric(sug_COVID)
+summary(sug_COVID)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 15.78   17.04   17.84   18.21   19.25   21.80
+hist(sug_COVID,
+     main=c("Daily Sugar Prices during COVID-19 Recession", "Recession: Mar 2020 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="pink")
+# Heavier upper tail than during Great Recession; has a slight positive skewness.  
+var(sug_COVID)
+# 2.385077
+sd(sug_COVID)
+# 1.544369
+
+# See the full R-script for the same analysis rescaled logarithmically.
+
+```
+# Sugar: First Order and Second Order Price Changes:
+# Testing Price Changes & Differences in Price Changes
+We did the same analysis for price changes, and found more evidence of stable price changes clustered around 0. 
+That is, not only are the price changes clustered around 0, but so are the changes of the price changes.
+Using a QQ plot and Chi-square test, we reject normality for both the first and second order price changes.
+
+```{r}
+daily_sug_price_change <- diff(daily_price_SUG)
+daily_sug_price_change_no_rec <- diff(sug_no_rec)
+daily_sug_price_change_rec <- diff(sug_any_rec)
+daily_sug_price_chng_dotcom <- diff(sug_dotcom)
+daily_sug_price_chng_GR <- diff(sug_GreatRec)
+daily_sug_price_chng_C19 <- diff(sug_COVID)
+
+hist(daily_sug_price_change,
+     main=c("Differences Between Daily Sugar Prices", "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
+# Very stable price changes, stable around 0
+summary(daily_sug_price_change)
+# Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+# -2.219999 -0.090000  0.000000 -0.001721  0.070000 16.810001 
+var(daily_sug_price_change)
+# 0.1608409
+sd(daily_sug_price_change)
+# 0.4010498
+
+# difference in price changes
+daily_sug_diff_diff <- diff(diff(daily_price_SUG))
+hist(daily_sug_diff_diff,
+     main=c("Differences Between Changes in Daily Sugar Prices", "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="pink")
+# Very small differences in price changes themselves! Always clustered around 0
+summary(daily_sug_diff_diff)
+#     Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -16.350002  -0.140000   0.000000  -0.000074   0.130002  16.810001 
+var(daily_sug_diff_diff)
+# 0.3365551
+sd(daily_sug_diff_diff)
+# 0.5801336
+
+hist(daily_sug_price_change_rec)
+summary(daily_sug_price_change_rec)
+#     Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -11.430001  -0.090000   0.000000  -0.008352   0.050000  15.960000
+
+# difference in price changes
+daily_sug_diff_diff_rec <- diff(daily_sug_price_change_rec)
+hist(daily_sug_diff_diff_rec,
+     main=c("Changes in Daily Sugar Prices", "Recessionary Periods", 
+            "Jan 2001 — Feb 2021"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
+# Changes in price changes for sugar cluster around 0, but there
+# are long thin tails
+summary(daily_sug_diff_diff_rec)
+#     Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+#-16.050001  -0.130000   0.000000   0.000085   0.122500  16.030000   
+var(daily_sug_diff_diff_rec)
+# 1.128211
+sd(daily_sug_diff_diff_rec)
+# 1.062173
+
+#****************
+
+hist(daily_sug_price_chng_dotcom)
+# Long thin tails with a tight curve
+summary(daily_sug_price_chng_dotcom)
+#    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+# -2.22000 -0.18000  0.00000 -0.02448  0.10750  2.51000
+
+# difference in price changes
+daily_sug_diff_diff_dotcom <- diff(daily_sug_price_chng_dotcom)
+hist(daily_sug_diff_diff_dotcom,
+     main=c("Changes in Daily Sugar Prices", 
+            "DotCom Crash", "Apr 2001 — Nov 2001"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="pink")
+# During the dotcom crash, we see that the changes
+# in price changes have very long and thin tails; there is a little volatility.
+# However, most of the changes are still clustered around 0, and the variance is low.
+summary(daily_sug_diff_diff_dotcom)
+# Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+# -4.73000 -0.25000  0.00000  0.00185  0.23000  2.51000 
+var(daily_sug_diff_diff_dotcom)
+# 0.4446871
+sd(daily_sug_diff_diff_dotcom)
+# 0.6668486
+
+#****************
+hist(daily_sug_price_chng_GR)
+hist(daily_sug_price_chng_GR, breaks = 50)
+# A much more normal-looking distribution than compared to the others.
+curve(dnorm(x, mean(daily_sug_price_chng_GR), sd = sqrt(var(daily_sug_price_chng_GR))), add=TRUE, col = "red")
+# However, we see that the normal distribution for this mean and this standard deviation
+# does not well-match the histogram for daily sugar price changes during the Great Recession.
+
+summary(daily_sug_price_chng_GR)
+# Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+# -0.310000 -0.060000  0.000000 -0.003821  0.050000  0.380000  
+
+# difference in price changes
+daily_sug_diff_diff_GR <- diff(daily_sug_price_chng_GR)
+hist(daily_sug_diff_diff_GR,
+     main=c("Changes in Daily Sugar Prices", 
+            "Great Recession", "Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
+hist(daily_sug_diff_diff_GR, breaks = 100, 
+     main=c("Changes in Daily Sugar Prices", 
+            "Great Recession", "Jan 2008 — Jun 2009"), 
+     xlab = "Prices in USD", ylab = "Frequency", col="magenta")
+curve(dnorm(x, mean(daily_sug_diff_diff_GR), sd = sqrt(var(daily_sug_diff_diff_GR))), 
+      add=TRUE, col = "dark blue")
+# The curve is too tightly clustered around the mean 
+# for this to follow the normal distribution.
+summary(daily_sug_diff_diff_GR)
+#  Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -0.4200000 -0.0800000 -0.0100000 -0.0002571  0.0700000  0.4400000   
+var(daily_sug_diff_diff_GR)
+# 0.01612983
+sd(daily_sug_diff_diff_GR)
+# 0.1270033
+
+#****************
+
+hist(daily_sug_price_chng_C19,
+     main=c("Changes in Daily Sugar Prices",
+            "COVID-19 Recession", 
+            "Mar 2020 — Feb 2021"), 
+     xlab="Price Changes in USD", ylab = "Frequency", col="red")
+# The price changes remain clustered around the near-0 mean with a very long and thin
+# tail due to the extremes.
+summary(daily_sug_price_chng_C19)
+#     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+# -2.22000 -0.15000  0.00000 -0.02189  0.08500  2.51000  
+
+# difference in price changes
+daily_sug_diff_diff_C19 <- diff(daily_sug_price_chng_C19)
+hist(daily_sug_diff_diff_C19,
+     main=c("Differences in Changes in Daily Sugar Prices",
+            "COVID-19 Recession", 
+            "Mar 2020 — Feb 2021"), 
+     xlab="Changes in USD", ylab = "Frequency", col="pink")
+# Continues to cluster around the near-0 mean for differences in price changes.
+# Continues to have very long and thin tails for the occasional outliers.
+summary(daily_sug_diff_diff_C19)
+#     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+# -4.73000 -0.20750 -0.00500  0.00062  0.20000  2.51000 
+var(daily_sug_diff_diff_C19)
+# 0.2405248
+sd(daily_sug_diff_diff_C19)
+# 0.4904333
+```
+
+# Testing Normality on First Order Price Changes
+```{r}
+# Log Price Changes/percentage changes
+qqnorm(daily_sug_price_change,
+       main="Normal Q-Q Plot for Price Changes in Sugar")
+qqline(daily_sug_price_change) 
+# The data usually follow the normal distribution, but the outliers 
+# of price changes creates heavy tails. The distribution is therefore not
+# normal. This matches what we have seen with gold, considered a safe haven good, and
+# oil, a price-inelastic good. Sugar is traditionally not thought of as either of these
+# types of goods, and yet it similarly has non-normal price changes, with heavy tails.
+# This seems to be a trait native to prices themselves, regardless of type of good.
+```
+
+# Testing Normality on Second Order Price Changes
+```{r}
+daily_pval_sug_diff_diff<- chiSqTest(daily_sug_diff_diff)
+# "Chi-sq test statistic:"
+# "9888.67053452539"
+# "p-value with df = {nbins - 2}:"
+# "0"
+# We definitely reject the null hypothesis that sugar's changes in price changes
+# follow a normal distribution.
+
+# Changes in price changes
+qqnorm(daily_sug_diff_diff,
+       main=c("Normal Q-Q Plot", "Differences of Price Changes in Sugar"))
+qqline(daily_sug_diff_diff) 
+# For sugar, changes in price changes have "lighter" tails, unlike for oil.
+```
+
+# Testing a Different Distribution: Pareto
+
+At this point, our hypothesis of an underlying normal price distribution for sugar has been rejected.
+We try instead a Pareto distribution on the prices themselves as well as on the price changes.
+We are unsuccessful in fitting the Pareto curve to either.
+
+```{r}
+#-------------------------------------
+# Daily: Sugar: Pareto distribution 
+# Using code and notes from STai's PSet #5 R homework
+#-------------------------------------
+# Let's assess whether the distribution of sugar's prices
+# follows a Pareto distribution instead. A Pareto distribution
+# can more closely model stock prices. 
+
+# Given the density function: 
+paretopdf <- function(y) 4*y^(-5)
+
+# Distribution function from integrating pdf from 1 to y: 
+# 1 - (1/y^4).
+
+# Quantile 
+# q = 1 - (1/y^4)
+CDF <- function(y) 1 - (1/y^4)
+# y = 1 / (1-q)^(1/4)
+invCDF <- function(q) 1 / (1-q)^(1/4)
+
+# Generating 10000 uniform random numbers to be the quantiles
+quantiles <- runif(10000)
+pareto_draws <- invCDF(quantiles)
+
+hist(pareto_draws, prob=TRUE,
+     main="Pareto Draws")
+curve(paretopdf, col="darkblue", lwd=3.2, add=TRUE)
+# Note that the curve of the pareto's density function matches the values that were
+# randomly drawn according to the distribution function's inverse.
+
+library(fitdistrplus)
+
+# Use a qq plot to see if the claims follow Pareto distribution with different parameters
+
+# The 1.25 creates a straight line between the theoretical quantiles and sample ones.
+CDF <- function(y) 1 - (1/y^1.25)
+
+#-----
+# generating quantiles for the number of data points in the sample 
+# e.g. if 100 data points, then [1/100, 2/100, 3/100, ..., 100/100]
+sug_noNA <- dailydata_ALL$priceSUG[which(dailydata_ALL$priceSUG != ".")]
+length_sug_noNA <- length(dailydata_ALL$priceSUG[which(dailydata_ALL$priceSUG != ".")])
+sample_quantiles_sug <- (1:length_sug_noNA) / length_sug_noNA
+
+# sorting the data set to compute each datapoint's theoretical quantile if it followed
+# the given distribution function. e.g. pareto with parameter of alpha.
+theoretical_quantiles_sug <- CDF(sort(as.numeric(sug_noNA)))
+
+# This QQ plot illustrates how well the theoretical distribution matches the empirical distribution.
+plot(theoretical_quantiles_sug, sample_quantiles_sug,
+     main="QQ Plot for Pareto Distribution: Sugar Prices",
+     xlab="Theoretical Quantiles",
+     ylab="Sample Quantiles")
+# Sugar prices' Pareto theoretical vs. sample quantiles has more of a linear relationship than
+# the other goods prices' Pareto theoretical vs. sample quantils' relationship!
+
+# Rescale using log
+
+alpha = 1.25
+pdf = function(y) alpha*exp(y)^(-alpha-1)
+hist(log(as.numeric(sug_noNA)), prob=TRUE,
+     main = "Log of Sugar Prices: Does a Pareto Fit?",
+     xlab="Sugar Prices", col="purple")
+curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
+# The curve does not fit the histogram.
+
+# Quick assessment of sugar's price changes
+sug_delt_noNA <- diff(as.numeric(sug_noNA))
+sug_sample_quantiles_delta <- (1:length(sug_delt_noNA)) / length(sug_delt_noNA)
+sug_delt_th_quant <- CDF(sort(sug_delt_noNA))
+plot(sug_delt_th_quant, sug_sample_quantiles_delta,
+     main=c("QQ Plot for Pareto Distribution:", "Changes in Sugar Prices"),
+     xlab="Theoretical Quantiles",
+     ylab="Sample Quantiles")
+# Definitely does not follow a line; no Pareto distribution is established.
+
+alpha = 1.25
+pdf = function(y) alpha*exp(y)^(-alpha-1)
+hist(log(sug_delt_noNA), prob=TRUE,
+     main = "Log of Sugar Prices: Does a Pareto Fit?",
+     xlab="Log of Changes in Sugar Prices",
+     col = "purple")
+curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
+# Rescaled logarithmically, the Pareto distribution fits the shape of the logs of sugar
+# price changes' histogram. However, the Pareto curve does not overlay the
+# histogram.
+```
+
+# Conclusion  
+These findings of price stability, at both the first and second order
+price changes, were not unique to sugar. The prices for the other goods, including
+safe-haven gold and inelastic oil, followed the same behavior. While there were differences
+in the variance of prices, price changes, and changes of the prices changes among
+different recessionary periods, the values always remained stubbornly tightly clustered
+around 0, with either long and thing or long and heavy tails indicating the 
+presence of sometimes unusual circumstances. From these findings, it seems prices themselves, 
+regardless of type of good or recession, do not have a normal population distribution.
 
 
 
