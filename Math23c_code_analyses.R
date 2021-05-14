@@ -208,7 +208,7 @@ plot(df_comm$Date, df_comm$rec2020)
 
 #chiSqTest code we wrote for this. 
 # Should be in accompanying file. Comment out once you've used.
-#chiSqTest <- dget("chiSqTest.R")
+chiSqTest <- dget("chiSqTest.R")
 
 
 #---------------------------------------------
@@ -334,18 +334,18 @@ pval_gold_diff_diffFeb01Jan2011 <- chiSqTest(gold_diff_diffFeb01Jan2011)
 "377.769491525424"
 "p-value with df = {nbins - 2}:"
 "1.06109053748395e-76"
-# The Chi-sq test confirms this is a normal distribution,
-# with a tiny p-value. This normal distribution has a very
-# very small chance of having occurred by chance.
+# The Chi-sq test confirms this is not a normal distribution.
+# With such a small p-value, we reject the null hypothesis of this being a normal distribution. 
+# This non-normal distribution has a very very small chance of having occurred by chance.
 
 pval_gold_diff_diffFeb11Jan21 <- chiSqTest(gold_diff_diffFeb11Jan21)
 "Chi-sq test statistic:"
 "377.769491525424"
 "p-value with df = {nbins - 2}:"
 "1.06109053748395e-76"
-# The Chi-sq test confirms this is a normal distribution,
-# with a tiny p-value. This normal distribution has a very
-# very small chance of having occurred by chance.
+# The Chi-sq test confirms this is not a normal distribution.
+# With such a small p-value, we reject the null hypothesis of this being a normal distribution. 
+# This non-normal distribution has a very very small chance of having occurred by chance.
 
 
 #QQ plots test of normality
@@ -432,15 +432,26 @@ var(gold_no_rec)
 sd(gold_no_rec)
 # 472.6615
 
-summary(gold_any_rec)
+# summary(gold_any_rec)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
 # 257.0   290.6   890.1   867.1   949.5  1957.5     166 
+# There are 166 values that are NAs. These appear to be week days where 
+# the market was not open, such as holidays.
+# Rerun without these dates for the analysis because any effect of these
+# holidays on the prices will be captured in the prices of the first open
+# market day after the holiday. Rename gold_any_rec.
+gold_any_rec <- dailydata_ALL$priceGOLD[which(dailydata_ALL$rec_inds_use.USRECD == 1 & dailydata_ALL$priceGOLD != ".")]
+# Cast the variable to ensure usage as numbers, not strings
+gold_any_rec <- as.numeric(gold_any_rec)
+summary(gold_any_rec)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 257.0   773.3   913.9  1048.5  1716.5  2061.5
 hist(gold_any_rec)
 # clustered around the prices during these time periods
 var(gold_any_rec)
-# NA
+# 331198.8
 sd(gold_any_rec)
-# NA
+# 575.4987
 
 
 summary(gold_dotcom)
@@ -463,15 +474,21 @@ var(gold_GreatRec)
 sd(gold_GreatRec)
 # 67.14845
 
-summary(gold_COVID)
+# summary(gold_COVID)
    #  Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
    # 1765    1834    1858    1858    1884    1957     166 
+# Redo without the weekday holidays
+gold_COVID <- dailydata_ALL$priceGOLD[which(dailydata_ALL$rec_types_use.USRECD == 3 & dailydata_ALL$priceGOLD != ".")]
+gold_COVID <- as.numeric(gold_COVID)
+summary(gold_COVID)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 1472    1728    1837    1814    1897    2062 
 hist(gold_COVID)
-# normal with heavy tails
+# Heavy and long tails
 var(gold_COVID)
-# NA
+# 13042.65
 sd(gold_COVID)
-# NA
+# 114.2044
 
 #Line graphs
 plot(daily_price_GOLD, type = 'l')
@@ -548,17 +565,19 @@ sd(daily_gold_diff_diff)
 
 hist(daily_gold_price_change_rec)
 summary(daily_gold_price_change_rec)
-#  Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
-# -0.06579 -0.00608 -0.00026  0.00292  0.00715  1.20142      166 
+#    Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -0.0857106 -0.0062178  0.0002771  0.0024089  0.0078989  1.1186148 
 
 # difference in price changes
 daily_gold_diff_diff_rec <- diff(daily_gold_price_change_rec)
 hist(daily_gold_diff_diff_rec)
 summary(daily_gold_diff_diff_rec)
-# Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
-# -1.18282 -0.01028 -0.00038 -0.00002  0.01086  1.19905      166 
+#    Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -1.0897751 -0.0113805 -0.0004483 -0.0000163  0.0111433  1.1184327 
 var(daily_gold_diff_diff_rec)
+# 0.004291922
 sd(daily_gold_diff_diff_rec)
+# 0.06551276
 
 #****************
 
@@ -598,19 +617,21 @@ sd(daily_gold_diff_diff_GR)
 
 #****************
 
-###THE NAs
-
 hist(daily_gd_price_chng_C19)
 summary(daily_gd_price_chng_C19)
-#     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
-# -0.04309 -0.00509 -0.00095 -0.00074  0.00568  0.02078      166 
+#      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -0.0540095 -0.0055388  0.0006364  0.0003672  0.0071458  0.0678994 
 
 # difference in price changes
 daily_gold_diff_diff_C19 <- diff(daily_gd_price_chng_C19)
 hist(daily_gold_diff_diff_C19)
 summary(daily_gold_diff_diff_C19)
+#    Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -5.458e-02 -1.006e-02 -6.350e-04 -3.417e-05  9.685e-03  7.454e-02 
 var(daily_gold_diff_diff_C19)
+# 0.0002724171
 sd(daily_gold_diff_diff_C19)
+# 0.01650506
 
 
 
@@ -623,8 +644,9 @@ daily_pval_gold_diff_diff<- chiSqTest(daily_gold_diff_diff)
 "16294.3909251621"
 "p-value with df = {nbins - 2}:"
 "0"
-# Daily prices also follow a normal distribution, with a [near] 0
-# chance of the normal distribution having happened by chance.
+# We reject the null hypothesis that 
+# the daily prices follow a normal distribution, with a [near] 0
+# chance of this result having happened by chance.
 
 #QQ plots test of normality to see how distribution compares to normal distribution
 
@@ -634,17 +656,18 @@ qqline(daily_gold_price_change)
 #WHOA, that's not normal. This is 
 # a heavy-tailed QQ plot. We saw this with the monthly data as well, where the 
 # tails also did not follow a normal distribution, veering away from the 
-# y = x line. With the daily data, it is even clearer the tails are heavy.
-# See below for analysis that removes data points with a z-score > |2.5|
+# y = x line. With the daily data, it is even clearer the tails are long and heavy.
 
 
 # Changes in log price changes/percentage changes
 qqnorm(daily_gold_diff_diff)
 qqline(daily_gold_diff_diff) 
 # This confirms as well that the differences in daily price
-# changes are normal except for the heavy tails.
-# The outliers may not follow a normal distribution among themselves.
+# changes do not follow a normal distribution.
 
+#****************************
+#*Summary Histograms
+#****************************
 
 # Comparing to relationship with recessions. 
 hist(daily_price_GOLD[which(dailydata_ALL$rec_inds_use.USRECD == 0)])
@@ -668,7 +691,7 @@ hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 3)], breaks=50
 
 #-------------------------------------
 # Daily: Gold: Pareto distribution 
-# Using code from pset #5 R homework
+# Using code and notes from STai's PSet #5 R homework
 #-------------------------------------
 
 # Given the density function: 
@@ -689,17 +712,12 @@ pareto_draws <- invCDF(quantiles)
 
 hist(pareto_draws, prob=TRUE)
 curve(paretopdf, col="darkblue", lwd=3.2, add=TRUE)
-# The curve of the pareto's density function matches the values that were
+# Note that the curve of the pareto's density function matches the values that were
 # randomly drawn according to the distribution function's inverse.
 
-# b) 
 library(fitdistrplus)
-# Leave the library commands; comment out the installs.
-
 
 # Use a qq plot to see if the claims follow Pareto distribution with different parameters
-# (Thanks to Samuel Moy for the idea to use a qq plot)
-# alpha = 3-5 still created a steep curve
 
 # The 1.25 creates a straight line between the theoretical quantiles and sample ones.
 CDF <- function(y) 1 - (1/y^1.25)
@@ -707,27 +725,35 @@ CDF <- function(y) 1 - (1/y^1.25)
 #-----
 # generating quantiles for the number of data points in the sample 
 # e.g. if 100 data points, then [1/100, 2/100, 3/100, ..., 100/100]
-sample_quantiles <- (1:length(dailydata_ALL$priceGOLD)) / length(danishuni$Loss) 
+Gold_noNA <- dailydata_ALL$priceGOLD[which(dailydata_ALL$priceGOLD != ".")]
+length_GOLD_noNA <- length(dailydata_ALL$priceGOLD[which(dailydata_ALL$priceGOLD != ".")])
+sample_quantiles <- (1:length_GOLD_noNA) / length(length_GOLD_noNA) 
 
 # sorting the data set to compute each datapoint's theoretical quantile if it followed
 # the given distribution function. e.g. pareto with parameter of alpha.
-theoretical_quantiles <- CDF(sort(danishuni$Loss))
+theoretical_quantiles <- CDF(sort(as.numeric(Gold_noNA)))
 
-# This illustrates how well the theoretical distribution matches the empirical distribution.
+# This QQ plot illustrates how well the theoretical distribution matches the empirical distribution.
 plot(theoretical_quantiles, sample_quantiles)
 
-# Another possible method, due to the extreme differences in scale, could be to look
-# at the distribution of the log of the losses. 
+# Rescale using log
 
 alpha = 1.25
 pdf = function(y) alpha*exp(y)^(-alpha-1)
-hist(log(danishuni$Loss), prob=TRUE)
+hist(log(as.numeric(Gold_noNA)), prob=TRUE)
 curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
 
-# This looks pretty good! The curve fits the historgram. 
+# Does the curve fit the histogram? It appears not, at least not for the price of gold
 
+# Quick assessment of gold's price changes
+Gold_delt_noNA <- diff(as.numeric(Gold_noNA))
+Gold_sample_quantiles_delta <- (1:length(Gold_delt_noNA)) / length(Gold_delt_noNA)
+gold_delt_th_quant <- CDF(sort(Gold_delt_noNA))
+plot(gold_delt_th_quant, Gold_sample_quantiles_delta)
+# Definitely does not follow a 45 degree line; these values do not appear to follow a Pareto distribution.
 
-#-------------------------------------
-# Daily: Gold: Levy distribution 
-#-------------------------------------
-
+alpha = 1.25
+pdf = function(y) alpha*exp(y)^(-alpha-1)
+hist(log(Gold_delt_noNA), prob=TRUE)
+curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
+# The Pareto distribution does not lie over the log(price changes of gold) histogram very well at all. 
