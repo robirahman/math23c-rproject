@@ -212,7 +212,7 @@ chiSqTest <- dget("chiSqTest.R")
 
 
 #---------------------------------------------
-# GOLD
+# GOLD: Data from the St. Louis Fed
 #---------------------------------------------
 
 #~~~~~~~~~~~~~
@@ -788,7 +788,7 @@ curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
 
 
 #*************************************************************
-#* Crude oil: WTI prices
+#* Crude oil: WTI prices. Data from the St. Louis Fed.
 #*************************************************************
 
 #----------------------
@@ -799,11 +799,11 @@ curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
 # missing values.
 daily_price_WTI <- as.numeric(dailydata_ALL$priceWTI[which(dailydata_ALL$priceWTI != ".")])
 
-# Recession variables for gold
+# Recession variables
 wti_no_rec <- daily_price_WTI[which(dailydata_ALL$rec_inds_use.USRECD == 0)]
 wti_any_rec <- daily_price_WTI[which(dailydata_ALL$rec_inds_use.USRECD == 1)]
 
-#Types of recessions variables for gold
+#Types of recessions variables
 wti_no_rec_type <- daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 0)]
 wti_dotcom <- daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 1)]
 wti_GreatRec <- daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 2)]
@@ -1177,12 +1177,390 @@ curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
 # Fits the data less well, missing the price changes > 0.
 
 
-
-
-
 #*************************************************************
-#* Sugar prices
+#* Sugar prices: Teucrium Sugar Fund prices from Yahoo Finance
 #*************************************************************
+#----------------------
+# Daily: Basic rundown
+#----------------------
+
+# Note: the values are strings, not numbers. So need to not include the 
+# missing values.
+daily_price_SUG <- as.numeric(dailydata_ALL$priceSUG[which(dailydata_ALL$priceSUG != ".")])
+
+# Recession variables
+sug_no_rec <- daily_price_SUG[which(dailydata_ALL$rec_inds_use.USRECD == 0)]
+sug_any_rec <- daily_price_SUG[which(dailydata_ALL$rec_inds_use.USRECD == 1)]
+
+#Types of recessions variables
+sug_no_rec_type <- daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 0)]
+sug_dotcom <- daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 1)]
+sug_GreatRec <- daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 2)]
+sug_COVID <- daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 3)]
+
+#------------------------------------
+
+# Histogram of prices
+hist(daily_price_SUG, breaks=50)
+# Possibly follows a gamma distribution, with greatest frequency between 5 and 10
+summary(daily_price_SUG)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 4.92    7.54   11.22   12.37   15.28   26.31 
+var(daily_price_SUG)
+#28.22823
+sd(daily_price_SUG)
+#5.313025
+
+# Comparing prices during recessions
+summary(sug_no_rec)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 4.92    7.93   11.02   12.17   14.81   26.31
+hist(sug_no_rec)
+# Definitely not normal. Looks similar to wind speeds' distribution, but sugar
+# prices do not fit the usual use case for a Weibull distribution.
+
+var(sug_no_rec)
+# 24.92819
+
+sd(sug_no_rec)
+# 4.992814
+
+sug_any_rec <- dailydata_ALL$priceSUG[which(dailydata_ALL$rec_inds_use.USRECD == 1 & dailydata_ALL$priceSUG != ".")]
+# Cast the variable to ensure usage as numbers, not strings
+sug_any_rec <- as.numeric(sug_any_rec)
+summary(sug_any_rec)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 4.92    6.93   16.13   13.50   19.29   24.66
+hist(sug_any_rec)
+# Extremely bimodal. It appears to be 50/50 split in prices < $7 and prices >$14.
+var(sug_any_rec)
+# 44.49444
+sd(sug_any_rec)
+# 6.670416
+
+
+summary(sug_dotcom)
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 17.50   22.29   26.94   25.39   27.91   29.96 
+hist(sug_dotcom)
+# the value of sug weighs heavily on the upper end during the dotcom crash
+var(sug_dotcom)
+# 11.5367
+sd(sug_dotcom)
+# 3.396572
+
+summary(sug_GreatRec)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 30.28   51.51   69.34   77.75  108.69  145.31 
+hist(sug_GreatRec)
+# bimodal, with a larger bump at the lower end
+var(sug_GreatRec)
+# 4508.915
+sd(sug_GreatRec)
+# 31.82328
+
+sug_COVID <- dailydata_ALL$priceSUG[which(dailydata_ALL$rec_types_use.USRECD == 3 & dailydata_ALL$priceSUG != ".")]
+sug_COVID <- as.numeric(sug_COVID)
+summary(sug_COVID)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# -36.98   36.47   40.53   39.24   45.42   63.43
+hist(sug_COVID)
+# Centered around upper end, with the outlier of -40. If one recalls the news
+# during this time, this should bring to mind the moment when the OPEC countries
+# were at a loss on what to do.
+var(sug_COVID)
+# 138.5191
+sd(sug_COVID)
+# 11.76941
+
+#Line graphs
+plot(daily_price_SUG, type = 'l')
+plot(sug_no_rec, type = 'l')
+plot(sug_any_rec, type= 'l')
+plot(sug_dotcom, type = 'l')
+plot(sug_GreatRec, type='l')
+plot(sug_COVID, type='l')
+# These all follow a random walk. No periodicity.
+
+# Log comparisons to rescale
+hist(log(daily_price_SUG))
+hist(log(sug_no_rec))
+#both of these are heavy on the right
+
+hist(log(sug_any_rec))
+# no recognizable distribution at first glance
+hist(log(sug_dotcom))
+# Possibly a beta distribution?
+
+hist(log(sug_GreatRec))
+hist(log(sug_COVID))
+
+#Difference in log values over time
+hist(diff(log(daily_price_SUG)))
+
+
+#-------------
+# Daily: price changes
+#
+#------------
+
+# Warning: min(daily_price_SUG) = -36.98; there are 
+# some negative values that are being used in log commands
+# because of oil market idiosyncrasies. Using non-rescaled prices instead.
+daily_sug_price_change <- diff(daily_price_SUG)
+daily_sug_price_change_no_rec <- diff(sug_no_rec)
+daily_sug_price_change_rec <- diff(sug_any_rec)
+daily_sug_price_chng_dotcom <- diff(sug_dotcom)
+daily_sug_price_chng_GR <- diff(sug_GreatRec)
+daily_sug_price_chng_C19 <- diff(sug_COVID)
+
+#-------------------------------------
+
+hist(daily_sug_price_change)
+summary(daily_sug_price_change)
+#    Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+# -55.29000  -0.69000   0.05000   0.00677   0.75000  45.89000
+var(daily_sug_price_change)
+# 3.163682
+sd(daily_sug_price_change)
+# 1.778674
+
+# difference in price changes
+daily_sug_diff_diff <- diff(diff(daily_price_SUG))
+hist(daily_sug_diff_diff)
+# Very small differences in price changes themselves! Always clustered around 0
+summary(daily_sug_diff_diff)
+# Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+#-53.7800  -1.0700  -0.0200  -0.0005   1.0300 101.1800 
+var(daily_gold_diff_diff)
+# 7.419232
+sd(daily_gold_diff_diff)
+# 2.723827
+
+#****************
+
+hist(daily_sug_price_change_rec)
+summary(daily_sug_price_change_rec)
+#     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+# -55.29000  -0.85500   0.07000   0.04509   0.93000  80.18000 
+
+# difference in price changes
+daily_sug_diff_diff_rec <- diff(daily_sug_price_change_rec)
+hist(daily_sug_diff_diff_rec)
+# Even during a recession the difference in price changes cluster around
+# 0. The variance is larger, but remains reasonably-sized, with a standard
+# deviation of 6.849487.
+summary(daily_sug_diff_diff_rec)
+#      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+# -80.65000  -1.37750  -0.06500  -0.00356   1.28500 101.18000  
+var(daily_sug_diff_diff_rec)
+# 46.91547
+sd(daily_sug_diff_diff_rec)
+# 6.849487
+
+#****************
+
+hist(daily_sug_price_chng_dotcom)
+summary(daily_sug_price_chng_dotcom)
+#     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+# -4.00000 -0.40250 -0.04000 -0.05046  0.33000  2.71000 
+
+# difference in price changes
+daily_sug_diff_diff_dotcom <- diff(daily_sug_price_chng_dotcom)
+hist(daily_sug_diff_diff_dotcom)
+summary(daily_sug_diff_diff_dotcom)
+#      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+# -4.360000 -0.560000 -0.010000  0.001503  0.550000  4.250000 
+var(daily_sug_diff_diff_dotcom)
+# 1.098891
+sd(daily_sug_diff_diff_dotcom)
+# 1.04828
+
+#****************
+
+hist(daily_sug_price_chng_GR)
+summary(daily_sug_price_chng_GR)
+#     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+# -14.76000  -1.68250  -0.01500  -0.09482   1.51500  18.56000 
+
+# difference in price changes
+daily_sug_diff_diff_GR <- diff(daily_sug_price_chng_GR)
+hist(daily_sug_diff_diff_GR)
+# There is a longer lower tail for this due to the value < -30.
+# Much more volatility during the Great Recession than there was in the dotcom crash.
+# The greater variance confirms this.
+summary(daily_sug_diff_diff_GR)
+#      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+# -33.32000  -2.29000  -0.05000   0.00149   2.21000  14.89000  
+var(daily_sug_diff_diff_GR)
+# 17.40762
+sd(daily_sug_diff_diff_GR)
+# 4.172244
+
+#****************
+
+hist(daily_sug_price_chng_C19)
+summary(daily_sug_price_chng_C19)
+#      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+# -55.29000  -0.51000   0.18000   0.05932   0.87000  45.89000  
+
+# difference in price changes
+daily_sug_diff_diff_C19 <- diff(daily_sug_price_chng_C19)
+hist(daily_sug_diff_diff_C19)
+# During COVID-19, there was much greater volatility. 
+# Note the two long tails, due to the extreme outliers of
+# changes in price changes at both the upper and lower ends.
+# The difference in price changes has a greater variance.
+summary(daily_sug_diff_diff_C19)
+# Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+#-53.78000  -1.11250  -0.13500  -0.00956   0.95000 101.18000 
+var(daily_sug_diff_diff_C19)
+# 65.61629
+sd(daily_sug_diff_diff_C19)
+# 8.100388
+
+
+
+
+
+#***Chi-square tests on normal distribution
+
+# Differences in the price changes
+daily_pval_sug_diff_diff<- chiSqTest(daily_sug_diff_diff)
+# "Chi-sq test statistic:"
+# "1536.02550919517"
+# "p-value with df = {nbins - 2}:"
+# "0"
+# We definitely reject the null hypothesis that oil's changes in price changes
+# follow a normal distribution.
+
+#QQ plots test of normality to see how distribution compares to normal distribution
+
+# Log Price Changes/percentage changes
+qqnorm(daily_sug_price_change)
+qqline(daily_sug_price_change) 
+# The data usually follow the normal distribution, but the outliers 
+# of price changes creates heavy tails. The distribution is therefore not
+# normal.
+
+
+# Changes in price changes
+qqnorm(daily_sug_diff_diff)
+qqline(daily_sug_diff_diff) 
+# Changes in price changes are even less normal, and even more heavily
+# tailed than the price changes.
+
+#****************************************
+#*Recap: Histograms and the good's normality
+#****************************************
+
+# Comparing to relationship with recessions. 
+hist(daily_price_SUG[which(dailydata_ALL$rec_inds_use.USRECD == 0)])
+hist(daily_price_SUG[which(dailydata_ALL$rec_inds_use.USRECD == 1)])
+
+#Binned
+hist(daily_price_SUG[which(dailydata_ALL$rec_inds_use.USRECD == 0)], breaks=50)
+hist(daily_price_SUG[which(dailydata_ALL$rec_inds_use.USRECD == 1)], breaks=50)
+
+#Types of recessions
+hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 0)])
+hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 1)])
+hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 2)])
+hist(daily_price_SUG[which(dailydata_ALL$rec_types_use.USRECD == 3)])
+
+#Types of recessions; binned
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 0)], breaks=50)
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 1)], breaks=50)
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 2)], breaks=50)
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 3)], breaks=50)
+
+# None of these is normal, as demonstrated above. The 
+# prices during the different recessions also appear to follow different distributions.
+
+#-------------------------------------
+# Daily: Oil: Pareto distribution 
+# Using code and notes from STai's PSet #5 R homework
+#-------------------------------------
+# Let's assess whether the distribution of oil's prices
+# follows a Pareto distribution instead. A Pareto distribution
+# can more closely model stock prices. 
+
+# Given the density function: 
+paretopdf <- function(y) 4*y^(-5)
+
+# Distribution function from integrating pdf from 1 to y: 
+# 1 - (1/y^4).
+
+# Quantile 
+# q = 1 - (1/y^4)
+CDF <- function(y) 1 - (1/y^4)
+# y = 1 / (1-q)^(1/4)
+invCDF <- function(q) 1 / (1-q)^(1/4)
+
+# Generating 10000 uniform random numbers to be the quantiles
+quantiles <- runif(10000)
+pareto_draws <- invCDF(quantiles)
+
+hist(pareto_draws, prob=TRUE)
+curve(paretopdf, col="darkblue", lwd=3.2, add=TRUE)
+# Note that the curve of the pareto's density function matches the values that were
+# randomly drawn according to the distribution function's inverse.
+
+library(fitdistrplus)
+
+# Use a qq plot to see if the claims follow Pareto distribution with different parameters
+
+# The 1.25 creates a straight line between the theoretical quantiles and sample ones.
+CDF <- function(y) 1 - (1/y^1.25)
+
+#-----
+# generating quantiles for the number of data points in the sample 
+# e.g. if 100 data points, then [1/100, 2/100, 3/100, ..., 100/100]
+sug_noNA <- dailydata_ALL$priceSUG[which(dailydata_ALL$priceSUG != ".")]
+length_sug_noNA <- length(dailydata_ALL$priceSUG[which(dailydata_ALL$priceSUG != ".")])
+sample_quantiles_sug <- (1:length_sug_noNA) / length_sug_noNA
+
+# sorting the data set to compute each datapoint's theoretical quantile if it followed
+# the given distribution function. e.g. pareto with parameter of alpha.
+theoretical_quantiles_sug <- CDF(sort(as.numeric(sug_noNA)))
+
+# This QQ plot illustrates how well the theoretical distribution matches the empirical distribution.
+plot(theoretical_quantiles_sug, sample_quantiles_sug)
+# It doesn't create a line; the Pareto distribution is not a good model
+
+# Rescale using log
+
+alpha = 1.25
+pdf = function(y) alpha*exp(y)^(-alpha-1)
+hist(log(as.numeric(sug_noNA)), prob=TRUE)
+curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
+
+# The curve does not fit the histogram.
+
+# Quick assessment of oil's price changes
+sug_delt_noNA <- diff(as.numeric(sug_noNA))
+sug_sample_quantiles_delta <- (1:length(sug_delt_noNA)) / length(sug_delt_noNA)
+sug_delt_th_quant <- CDF(sort(sug_delt_noNA))
+plot(sug_delt_th_quant, sug_sample_quantiles_delta)
+# Definitely does not follow a line; no Pareto distribution is established.
+
+alpha = 1.25
+pdf = function(y) alpha*exp(y)^(-alpha-1)
+hist(log(sug_delt_noNA), prob=TRUE)
+curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
+# Rescaled logarithmically, the Pareto distribution fits the upper end of oil's price changes much better
+# than it fits the prices themselves. It fits the upper end of the data
+# for the log of the price changes. The lower end's end's data is not modeled well
+# by the Pareto distribution, however. The data's variance is not captured.
+# The upper end of price changes of oil, that is, price changes >0, possibly follows a Pareto distribution.
+# This is, however, with some log(negative value) datapoints, which produces NaNs.
+
+#Rescaled to using all data
+alpha = 1.25
+pdf = function(y) alpha*exp(y)^(-alpha-1)
+hist(sug_delt_noNA, prob=TRUE)
+curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
+# Fits the data less well, missing the price changes > 0.
 
 
 #*************************************************************
