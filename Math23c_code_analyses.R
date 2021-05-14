@@ -1371,63 +1371,73 @@ sd(daily_sug_diff_diff_rec)
 #****************
 
 hist(daily_sug_price_chng_dotcom)
+# Long thin tails with a tight curve
 summary(daily_sug_price_chng_dotcom)
-#     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-# -4.00000 -0.40250 -0.04000 -0.05046  0.33000  2.71000 
+#    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+# -2.22000 -0.18000  0.00000 -0.02448  0.10750  2.51000
 
 # difference in price changes
 daily_sug_diff_diff_dotcom <- diff(daily_sug_price_chng_dotcom)
 hist(daily_sug_diff_diff_dotcom)
+# During the dotcom crash, we see that the changes
+# in price changes have very long and thin tails; there is a little volatility.
+# However, most of the changes are still clustered around 0, and the variance is low.
 summary(daily_sug_diff_diff_dotcom)
-#      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-# -4.360000 -0.560000 -0.010000  0.001503  0.550000  4.250000 
+# Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+# -4.73000 -0.25000  0.00000  0.00185  0.23000  2.51000 
 var(daily_sug_diff_diff_dotcom)
-# 1.098891
+# 0.4446871
 sd(daily_sug_diff_diff_dotcom)
-# 1.04828
+# 0.6668486
 
 #****************
-
 hist(daily_sug_price_chng_GR)
+hist(daily_sug_price_chng_GR, breaks = 50)
+# A much more normal-looking distribution than compared to the others.
+curve(dnorm(x, mean(daily_sug_price_chng_GR), sd = sqrt(var(daily_sug_price_chng_GR))), add=TRUE, col = "red")
+# However, we see that the normal distribution for this mean and this standard deviation
+# does not well-match the histogram for daily sugar price changes during the Great Recession.
+
 summary(daily_sug_price_chng_GR)
-#     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-# -14.76000  -1.68250  -0.01500  -0.09482   1.51500  18.56000 
+# Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+# -0.310000 -0.060000  0.000000 -0.003821  0.050000  0.380000  
 
 # difference in price changes
 daily_sug_diff_diff_GR <- diff(daily_sug_price_chng_GR)
 hist(daily_sug_diff_diff_GR)
-# There is a longer lower tail for this due to the value < -30.
-# Much more volatility during the Great Recession than there was in the dotcom crash.
-# The greater variance confirms this.
+hist(daily_sug_diff_diff_GR, breaks = 100)
+curve(dnorm(x, mean(daily_sug_diff_diff_GR), sd = sqrt(var(daily_sug_diff_diff_GR))), add=TRUE, col = "red")
+# The curve is too tightly clustered around the mean 
+# for this to follow the normal distribution.
 summary(daily_sug_diff_diff_GR)
-#      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-# -33.32000  -2.29000  -0.05000   0.00149   2.21000  14.89000  
+#  Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -0.4200000 -0.0800000 -0.0100000 -0.0002571  0.0700000  0.4400000   
 var(daily_sug_diff_diff_GR)
-# 17.40762
+# 0.01612983
 sd(daily_sug_diff_diff_GR)
-# 4.172244
+# 0.1270033
 
 #****************
 
 hist(daily_sug_price_chng_C19)
+# The price changes remain clustered around the near-0 mean with a very long and thin
+# tail due to the extremes.
 summary(daily_sug_price_chng_C19)
-#      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-# -55.29000  -0.51000   0.18000   0.05932   0.87000  45.89000  
+#     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+# -2.22000 -0.15000  0.00000 -0.02189  0.08500  2.51000  
 
 # difference in price changes
 daily_sug_diff_diff_C19 <- diff(daily_sug_price_chng_C19)
 hist(daily_sug_diff_diff_C19)
-# During COVID-19, there was much greater volatility. 
-# Note the two long tails, due to the extreme outliers of
-# changes in price changes at both the upper and lower ends.
-# The difference in price changes has a greater variance.
+# Continues to cluster around the near-0 mean for differences in price changes.
+# Continues to have very long and thin tails for the occasional outliers.
 summary(daily_sug_diff_diff_C19)
-# Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-#-53.78000  -1.11250  -0.13500  -0.00956   0.95000 101.18000 
+#     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+# -4.73000 -0.20750 -0.00500  0.00062  0.20000  2.51000 
 var(daily_sug_diff_diff_C19)
-# 65.61629
+# 0.2405248
 sd(daily_sug_diff_diff_C19)
-# 8.100388
+# 0.4904333
 
 
 
@@ -1438,10 +1448,10 @@ sd(daily_sug_diff_diff_C19)
 # Differences in the price changes
 daily_pval_sug_diff_diff<- chiSqTest(daily_sug_diff_diff)
 # "Chi-sq test statistic:"
-# "1536.02550919517"
+# "9888.67053452539"
 # "p-value with df = {nbins - 2}:"
 # "0"
-# We definitely reject the null hypothesis that oil's changes in price changes
+# We definitely reject the null hypothesis that sugar's changes in price changes
 # follow a normal distribution.
 
 #QQ plots test of normality to see how distribution compares to normal distribution
@@ -1451,17 +1461,19 @@ qqnorm(daily_sug_price_change)
 qqline(daily_sug_price_change) 
 # The data usually follow the normal distribution, but the outliers 
 # of price changes creates heavy tails. The distribution is therefore not
-# normal.
+# normal. This matches what we have seen with gold, considered a safe haven good, and
+# oil, a price-inelastic good. Sugar is traditionally not thought of as either of these
+# types of goods, and yet it similarly has non-normal price changes, with heavy tails.
+# This seems to be a trait native to prices themselves, regardless of type of good.
 
 
 # Changes in price changes
 qqnorm(daily_sug_diff_diff)
 qqline(daily_sug_diff_diff) 
-# Changes in price changes are even less normal, and even more heavily
-# tailed than the price changes.
+# For sugar, changes in price changes have "lighter" tails, unlike for oil.
 
 #****************************************
-#*Recap: Histograms and the good's normality
+#*Recap: Histograms and sugar prices' normality
 #****************************************
 
 # Comparing to relationship with recessions. 
@@ -1485,13 +1497,15 @@ hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 2)], breaks=50
 hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 3)], breaks=50)
 
 # None of these is normal, as demonstrated above. The 
-# prices during the different recessions also appear to follow different distributions.
+# prices during the different recessions also appear to follow different distributions
+# with different skewness. The Great Recession is negatively skewed; COVID recession
+# is closer to normal with a wide variance; dotcom crash has a slight positive skewness.
 
 #-------------------------------------
-# Daily: Oil: Pareto distribution 
+# Daily: Sugar: Pareto distribution 
 # Using code and notes from STai's PSet #5 R homework
 #-------------------------------------
-# Let's assess whether the distribution of oil's prices
+# Let's assess whether the distribution of sugar's prices
 # follows a Pareto distribution instead. A Pareto distribution
 # can more closely model stock prices. 
 
@@ -1536,7 +1550,8 @@ theoretical_quantiles_sug <- CDF(sort(as.numeric(sug_noNA)))
 
 # This QQ plot illustrates how well the theoretical distribution matches the empirical distribution.
 plot(theoretical_quantiles_sug, sample_quantiles_sug)
-# It doesn't create a line; the Pareto distribution is not a good model
+# Sugar prices' Pareto theoretical vs. sample quantiles has more of a linear relationship than
+# the other goods prices' Pareto theoretical vs. sample quantils' relationship!
 
 # Rescale using log
 
@@ -1544,10 +1559,9 @@ alpha = 1.25
 pdf = function(y) alpha*exp(y)^(-alpha-1)
 hist(log(as.numeric(sug_noNA)), prob=TRUE)
 curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
-
 # The curve does not fit the histogram.
 
-# Quick assessment of oil's price changes
+# Quick assessment of sugar's price changes
 sug_delt_noNA <- diff(as.numeric(sug_noNA))
 sug_sample_quantiles_delta <- (1:length(sug_delt_noNA)) / length(sug_delt_noNA)
 sug_delt_th_quant <- CDF(sort(sug_delt_noNA))
@@ -1558,19 +1572,9 @@ alpha = 1.25
 pdf = function(y) alpha*exp(y)^(-alpha-1)
 hist(log(sug_delt_noNA), prob=TRUE)
 curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
-# Rescaled logarithmically, the Pareto distribution fits the upper end of oil's price changes much better
-# than it fits the prices themselves. It fits the upper end of the data
-# for the log of the price changes. The lower end's end's data is not modeled well
-# by the Pareto distribution, however. The data's variance is not captured.
-# The upper end of price changes of oil, that is, price changes >0, possibly follows a Pareto distribution.
-# This is, however, with some log(negative value) datapoints, which produces NaNs.
-
-#Rescaled to using all data
-alpha = 1.25
-pdf = function(y) alpha*exp(y)^(-alpha-1)
-hist(sug_delt_noNA, prob=TRUE)
-curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
-# Fits the data less well, missing the price changes > 0.
+# Rescaled logarithmically, the Pareto distribution fits the shape of the logs of sugar
+# price changes' histogram. However, the Pareto curve does not overlay the
+# histogram.
 
 
 #*************************************************************
