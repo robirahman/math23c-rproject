@@ -765,5 +765,386 @@ curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
 
 
 #*************************************************************
-#* Crude oil
+#* Crude oil: WTI prices
 #*************************************************************
+
+#----------------------
+# Daily: Basic rundown
+#----------------------
+
+# Note: the values are strings, not numbers. So need to not include the 
+# missing values.
+daily_price_WTI <- as.numeric(dailydata_ALL$priceWTI[which(dailydata_ALL$priceWTI != ".")])
+
+# Recession variables for gold
+wti_no_rec <- daily_price_WTI[which(dailydata_ALL$rec_inds_use.USRECD == 0)]
+wti_any_rec <- daily_price_WTI[which(dailydata_ALL$rec_inds_use.USRECD == 1)]
+
+#Types of recessions variables for gold
+wti_no_rec_type <- daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 0)]
+wti_dotcom <- daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 1)]
+wti_GreatRec <- daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 2)]
+wti_COVID <- daily_price_WTI[which(dailydata_ALL$rec_types_use.USRECD == 3)]
+
+#------------------------------------
+
+# Histogram of prices
+hist(daily_price_WTI, breaks=50)
+summary(daily_price_WTI)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# -36.98   42.80   58.64   62.27   82.46  145.31
+var(daily_price_WTI)
+#665.2304
+sd(daily_price_WTI)
+#25.79206
+
+# Comparing prices during recessions
+summary(wti_no_rec)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# -36.98   44.13   59.17   62.49   83.25  114.80 
+hist(wti_no_rec)
+# Very even and wide distribution during a recession;
+# the price distribution looks almost uniform for frequencies of 400.
+# Seems to confirm that oil is an inelastic good: no matter the cost,
+# the people buy at the usual amounts.
+# There is still a peak around 50 dollars/barrel.
+
+var(wti_no_rec)
+# 593.0466
+
+sd(wti_no_rec)
+# 24.35255
+
+wti_any_rec <- dailydata_ALL$priceWTI[which(dailydata_ALL$rec_inds_use.USRECD == 1 & dailydata_ALL$priceWTI != ".")]
+# Cast the variable to ensure usage as numbers, not strings
+wti_any_rec <- as.numeric(wti_any_rec)
+summary(wti_any_rec)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# -36.98   28.82   43.17   57.48   75.14  145.31 
+hist(wti_any_rec)
+# clustered around the $40 - $50 mark, with a long and heavy upper tail
+var(wti_any_rec)
+# 1214.918
+sd(wti_any_rec)
+# 34.85568
+
+
+summary(wti_dotcom)
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 17.50   22.29   26.94   25.39   27.91   29.96 
+hist(wti_dotcom)
+# the value of wti weighs heavily on the upper end during the dotcom crash
+var(wti_dotcom)
+# 11.5367
+sd(wti_dotcom)
+# 3.396572
+
+summary(wti_GreatRec)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 30.28   51.51   69.34   77.75  108.69  145.31 
+hist(wti_GreatRec)
+# bimodal, with a larger bump at the lower end
+var(wti_GreatRec)
+# 4508.915
+sd(wti_GreatRec)
+# 31.82328
+
+wti_COVID <- dailydata_ALL$priceWTI[which(dailydata_ALL$rec_types_use.USRECD == 3 & dailydata_ALL$priceWTI != ".")]
+wti_COVID <- as.numeric(wti_COVID)
+summary(wti_COVID)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# -36.98   36.47   40.53   39.24   45.42   63.43
+hist(wti_COVID)
+# Centered around upper end, with the outlier of -40. If one recalls the news
+# during this time, this should bring to mind the moment when the OPEC countries
+# were at a loss on what to do.
+var(wti_COVID)
+# 138.5191
+sd(wti_COVID)
+# 11.76941
+
+#Line graphs
+plot(daily_price_WTI, type = 'l')
+plot(wti_no_rec, type = 'l')
+
+plot(wti_any_rec, type= 'l')
+plot(wti_dotcom, type = 'l')
+
+
+plot(wti_GreatRec, type='l')
+
+
+plot(gold_COVID, type='l')
+# Overall decreasing trend
+
+# Log comparisons of gold prices to rescale
+hist(log(daily_price_GOLD))
+
+hist(log(gold_no_rec))
+# negative skewness
+
+hist(log(gold_any_rec))
+#three clusters around certain prices, aligned with the log price of gold during
+# each recession
+
+hist(log(gold_dotcom))
+#heavy-tailed normal
+
+hist(log(gold_GreatRec))
+#negative skewness
+
+hist(log(gold_COVID))
+#positive skewness
+
+#Difference in log values over time
+hist(diff(log(daily_price_GOLD)))
+
+
+#-------------
+# Daily: price changes
+# Note: using log values to rescale
+#------------
+
+daily_gold_price_change <- diff(log(daily_price_GOLD))
+daily_gold_price_change_no_rec <- diff(log(gold_no_rec))
+daily_gold_price_change_rec <- diff(log(gold_any_rec))
+daily_gd_price_chng_dotcom <- diff(log(gold_dotcom))
+daily_gd_price_chng_GR <- diff(log(gold_GreatRec))
+daily_gd_price_chng_C19 <- diff(log(gold_COVID))
+
+#-------------------------------------
+
+hist(daily_gold_price_change)
+summary(daily_gold_price_change)
+#      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+#-0.0891278 -0.0052370  0.0004333  0.0003667  0.0061726  0.0955416 
+var(daily_gold_price_change)
+# 0.0001224745
+sd(daily_gold_price_change)
+# 0.01106682
+
+# difference in price changes
+daily_gold_diff_diff <- diff(diff(log(daily_price_GOLD)))
+hist(daily_gold_diff_diff)
+summary(daily_gold_diff_diff)
+#   Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+#-1.270e-01 -8.403e-03 -1.802e-04 -2.300e-07  8.609e-03  1.151e-01
+var(daily_gold_diff_diff)
+# 0.0002503008
+sd(daily_gold_diff_diff)
+# 0.0158209
+
+#****************
+
+hist(daily_gold_price_change_rec)
+summary(daily_gold_price_change_rec)
+#    Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -0.0857106 -0.0062178  0.0002771  0.0024089  0.0078989  1.1186148 
+
+# difference in price changes
+daily_gold_diff_diff_rec <- diff(daily_gold_price_change_rec)
+hist(daily_gold_diff_diff_rec)
+summary(daily_gold_diff_diff_rec)
+#    Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -1.0897751 -0.0113805 -0.0004483 -0.0000163  0.0111433  1.1184327 
+var(daily_gold_diff_diff_rec)
+# 0.004291922
+sd(daily_gold_diff_diff_rec)
+# 0.06551276
+
+#****************
+
+hist(daily_gd_price_chng_dotcom)
+summary(daily_gd_price_chng_dotcom)
+# Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -0.0279777 -0.0040967  0.0001821  0.0003715  0.0038493  0.0580054 
+
+# difference in price changes
+daily_gold_diff_diff_dotcom <- diff(daily_gd_price_chng_dotcom)
+hist(daily_gold_diff_diff_dotcom)
+summary(daily_gold_diff_diff_dotcom)
+#     Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -7.762e-02 -6.404e-03  1.195e-03  2.605e-05  6.374e-03  5.672e-02 
+var(daily_gold_diff_diff_dotcom)
+# 0.0001772934
+sd(daily_gold_diff_diff_dotcom)
+# 0.01331516
+
+#****************
+
+hist(daily_gd_price_chng_GR)
+summary(daily_gd_price_chng_GR)
+#    Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -0.0657935 -0.0084565 -0.0004112  0.0002834  0.0098430  0.0955416 
+
+# difference in price changes
+daily_gold_diff_diff_GR <- diff(daily_gd_price_chng_GR)
+hist(daily_gold_diff_diff_GR)
+summary(daily_gold_diff_diff_GR)
+#      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -1.270e-01 -1.407e-02 -5.823e-04 -7.180e-06  1.457e-02  8.819e-02 
+var(daily_gold_diff_diff_GR)
+# 0.0007015153
+sd(daily_gold_diff_diff_GR)
+# 0.02648613
+
+#****************
+
+hist(daily_gd_price_chng_C19)
+summary(daily_gd_price_chng_C19)
+#      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -0.0540095 -0.0055388  0.0006364  0.0003672  0.0071458  0.0678994 
+
+# difference in price changes
+daily_gold_diff_diff_C19 <- diff(daily_gd_price_chng_C19)
+hist(daily_gold_diff_diff_C19)
+summary(daily_gold_diff_diff_C19)
+#    Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+# -5.458e-02 -1.006e-02 -6.350e-04 -3.417e-05  9.685e-03  7.454e-02 
+var(daily_gold_diff_diff_C19)
+# 0.0002724171
+sd(daily_gold_diff_diff_C19)
+# 0.01650506
+
+
+
+
+#***Chi-square tests on normal distribution
+
+# Differences in the price changes
+daily_pval_gold_diff_diff<- chiSqTest(daily_gold_diff_diff)
+"Chi-sq test statistic:"
+"16294.3909251621"
+"p-value with df = {nbins - 2}:"
+"0"
+# We reject the null hypothesis that 
+# the daily prices follow a normal distribution, with a [near] 0
+# chance of this result having happened by chance.
+
+#QQ plots test of normality to see how distribution compares to normal distribution
+
+# Log Price Changes/percentage changes
+qqnorm(daily_gold_price_change)
+qqline(daily_gold_price_change) 
+#WHOA, that's not normal. This is 
+# a heavy-tailed QQ plot. We saw this with the monthly data as well, where the 
+# tails also did not follow a normal distribution, veering away from the 
+# y = x line. With the daily data, it is even clearer the tails are long and heavy.
+
+
+# Changes in log price changes/percentage changes
+qqnorm(daily_gold_diff_diff)
+qqline(daily_gold_diff_diff) 
+# This confirms as well that the differences in daily price
+# changes do not follow a normal distribution.
+
+#****************************
+#*Summary Histograms
+#****************************
+
+# Comparing to relationship with recessions. 
+hist(daily_price_GOLD[which(dailydata_ALL$rec_inds_use.USRECD == 0)])
+hist(daily_price_GOLD[which(dailydata_ALL$rec_inds_use.USRECD == 1)])
+
+#frequency
+hist(daily_price_GOLD[which(dailydata_ALL$rec_inds_use.USRECD == 0)], breaks=50)
+hist(daily_price_GOLD[which(dailydata_ALL$rec_inds_use.USRECD == 1)], breaks=50)
+
+#Types of recessions
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 0)])
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 1)])
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 2)])
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 3)])
+
+#frequency
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 0)], breaks=50)
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 1)], breaks=50)
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 2)], breaks=50)
+hist(daily_price_GOLD[which(dailydata_ALL$rec_types_use.USRECD == 3)], breaks=50)
+
+#-------------------------------------
+# Daily: Gold: Pareto distribution 
+# Using code and notes from STai's PSet #5 R homework
+#-------------------------------------
+# Let's assess whether the distribution of gold's prices
+# follows a Pareto distribution instead. A Pareto distribution
+# can more closely model stock prices. 
+
+# Given the density function: 
+paretopdf <- function(y) 4*y^(-5)
+
+# Distribution function from integrating pdf from 1 to y: 
+# 1 - (1/y^4).
+
+# Quantile 
+# q = 1 - (1/y^4)
+CDF <- function(y) 1 - (1/y^4)
+# y = 1 / (1-q)^(1/4)
+invCDF <- function(q) 1 / (1-q)^(1/4)
+
+# Generating 10000 uniform random numbers to be the quantiles
+quantiles <- runif(10000)
+pareto_draws <- invCDF(quantiles)
+
+hist(pareto_draws, prob=TRUE)
+curve(paretopdf, col="darkblue", lwd=3.2, add=TRUE)
+# Note that the curve of the pareto's density function matches the values that were
+# randomly drawn according to the distribution function's inverse.
+
+library(fitdistrplus)
+
+# Use a qq plot to see if the claims follow Pareto distribution with different parameters
+
+# The 1.25 creates a straight line between the theoretical quantiles and sample ones.
+CDF <- function(y) 1 - (1/y^1.25)
+
+#-----
+# generating quantiles for the number of data points in the sample 
+# e.g. if 100 data points, then [1/100, 2/100, 3/100, ..., 100/100]
+Gold_noNA <- dailydata_ALL$priceGOLD[which(dailydata_ALL$priceGOLD != ".")]
+length_GOLD_noNA <- length(dailydata_ALL$priceGOLD[which(dailydata_ALL$priceGOLD != ".")])
+sample_quantiles <- (1:length_GOLD_noNA) / length(length_GOLD_noNA) 
+
+# sorting the data set to compute each datapoint's theoretical quantile if it followed
+# the given distribution function. e.g. pareto with parameter of alpha.
+theoretical_quantiles <- CDF(sort(as.numeric(Gold_noNA)))
+
+# This QQ plot illustrates how well the theoretical distribution matches the empirical distribution.
+plot(theoretical_quantiles, sample_quantiles)
+
+# Rescale using log
+
+alpha = 1.25
+pdf = function(y) alpha*exp(y)^(-alpha-1)
+hist(log(as.numeric(Gold_noNA)), prob=TRUE)
+curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
+
+# Does the curve fit the histogram? It appears not, at least not for the price of gold
+
+# Quick assessment of gold's price changes
+Gold_delt_noNA <- diff(as.numeric(Gold_noNA))
+Gold_sample_quantiles_delta <- (1:length(Gold_delt_noNA)) / length(Gold_delt_noNA)
+gold_delt_th_quant <- CDF(sort(Gold_delt_noNA))
+plot(gold_delt_th_quant, Gold_sample_quantiles_delta)
+# Definitely does not follow a 45 degree line; these values do not appear to follow a Pareto distribution.
+
+alpha = 1.25
+pdf = function(y) alpha*exp(y)^(-alpha-1)
+hist(log(Gold_delt_noNA), prob=TRUE)
+curve(pdf, col="darkblue", lwd=3.2, add=TRUE)
+# The Pareto distribution does not lie over the log(price changes of gold) histogram very well at all. 
+# The scale of price changes can't be attributed to only a small proportion of the price changes.
+
+
+
+
+
+#*************************************************************
+#* Sugar prices
+#*************************************************************
+
+
+#*************************************************************
+#* Wheat prices
+#*************************************************************
+
