@@ -5,6 +5,32 @@
 set.seed(25)
 
 #************************
+#*Note on points in this long script; please see the other half of the script 
+#*for rest of points
+#************************
+# 1. A data set with lots of columns, allowing comparison of many different variables.
+# Please see the daily data dataframe: head(dailydata_ALL)
+
+# 2. A data set that is so large that it can be used as a population from which samples are taken.
+# Over 5200 rows; all the price data from two decades
+
+# 10. Professional looking software code (defined at project OH as generalizable code):
+# Please see my other file: ChiSqTest.R. Please also see my Pareto code throughout the
+# different analyses. One example: lines 911-996
+
+# 17. I use theoretical knowledge of Chi-square tests to code up a ChiSqTest that
+# could easily be used for testing normal distribution with any dataset.
+
+#19. QQ-plots are in the textbook but not class scripts; these are also throughout this script.
+# One example: 437-470
+
+#21. Appropriate use of quantiles to compare distributions. I do this with a Pareto
+# distribution. One example: lines 911-996
+
+#22. Team is just Robi Rahman and me
+
+
+#************************
 #*Data set-up
 #************************
 
