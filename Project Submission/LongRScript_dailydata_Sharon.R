@@ -5,8 +5,8 @@
 set.seed(25)
 
 #************************
-#*Note on points in this long script; please see the other half of the script 
-#*for rest of points
+#*Note on points in this long script; please see the other long script (for independence analyses)
+#*for rest of points. 
 #************************
 # 1. A data set with lots of columns, allowing comparison of many different variables.
 # Please see the daily data dataframe: head(dailydata_ALL)
