@@ -334,9 +334,15 @@ summary(var_aic)
 
 
 
-
-
-
+# Note to graders regarding: 10 additional points
+#  2. 233, 234, 248
+#  5. 175, 180
+# 11. 148, 166
+# 12. 189-252
+# 14. 266 and many other places
+# 15. 79-89
+# 19. same as #5
+# 20. 238-240, 244-246
 
 
 
